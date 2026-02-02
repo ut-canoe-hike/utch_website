@@ -47,9 +47,13 @@
         <section class="hero" data-officer-login>
           <h1>Officer Login</h1>
           <form class="form" data-officer-login-form>
+            <div class="sr-only" aria-hidden="true">
+              <label for="officerUsername">Username</label>
+              <input id="officerUsername" name="username" type="text" autocomplete="username" tabindex="-1" />
+            </div>
             <div class="field">
               <label for="officerSecret">Passcode</label>
-              <input id="officerSecret" name="officerSecret" type="password" autocomplete="current-password" required />
+              <input id="officerSecret" name="officerSecret" type="text" placeholder="Enter Passcode" autocomplete="current-password" required />
             </div>
             <button class="button primary" type="submit">Continue</button>
             <div class="status" data-officer-login-status hidden></div>

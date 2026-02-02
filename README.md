@@ -25,10 +25,16 @@ The only “backend” is a Google **Apps Script** web app that writes to a Goog
 
 ## Quick links (once set up)
 
-- Public site: `https://<org-or-user>.github.io/<repo>/`
-- Calendar page: `https://<org-or-user>.github.io/<repo>/calendar.html`
-- Officer trip creator: `https://<org-or-user>.github.io/<repo>/officer.html`
+- Public site: `https://ut-canoe-hike.github.io/`
+- Calendar page: `https://ut-canoe-hike.github.io/calendar.html`
+- Officer trip creator: `https://ut-canoe-hike.github.io/officer.html`
 - Data spreadsheet (“UTCH Site Data”): `https://docs.google.com/spreadsheets/d/19bHgttW_rnmQXu8x8u4tDlT_RfsOpZgwjlgMh0JHefQ/edit`
+
+---
+
+## Custom domain note (optional)
+
+- `utch.club` would cost **$12.20/year** if you decide to buy it later.
 
 ---
 
@@ -84,7 +90,7 @@ Recommended: use **clasp** to sync Apps Script with this repo (no copy/paste).
 
 ### Create a trip (recommended)
 
-1. Open the officer page: `https://<org-or-user>.github.io/<repo>/officer.html`
+1. Open the officer page: `https://ut-canoe-hike.github.io/officer.html`
 2. Enter the officer passcode
 3. Fill out trip details and (optionally) select which **club gear** is available
 4. Submit (you’ll be redirected briefly to a result page and then back)

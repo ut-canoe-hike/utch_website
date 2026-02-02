@@ -766,7 +766,13 @@ function htmlPostMessageResult_(action, result, requestId) {
     + "try{window.parent&&window.parent.postMessage(" + JSON.stringify(payload) + "," + JSON.stringify(origin) + ");}catch(e){}"
     + "</script>";
 
-  return HtmlService.createHtmlOutput(html);
+  var output = HtmlService.createHtmlOutput(html);
+  try {
+    if (output.setXFrameOptionsMode) {
+      output.setXFrameOptionsMode(HtmlService.XFrameOptionsMode.ALLOWALL);
+    }
+  } catch (_) {}
+  return output;
 }
 
 function redirectResult_(action, result, returnTo) {
