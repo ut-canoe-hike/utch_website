@@ -19,7 +19,7 @@ The only “backend” is a Google **Apps Script** web app that writes to a Goog
 
 - Public site: `https://<org-or-user>.github.io/<repo>/`
 - Calendar page: `https://<org-or-user>.github.io/<repo>/calendar.html`
-- Officer trip creator: `<APPS_SCRIPT_WEB_APP_URL>?page=officer`
+- Officer trip creator: `https://<org-or-user>.github.io/<repo>/officer.html`
 - Data spreadsheet (“UTCH Site Data”): `https://docs.google.com/spreadsheets/d/19bHgttW_rnmQXu8x8u4tDlT_RfsOpZgwjlgMh0JHefQ/edit`
 
 ---
@@ -64,6 +64,7 @@ You will deploy a Google Apps Script web app using the files in `apps-script/`.
    - Who has access: **Anyone**
 5. Copy the Web app URL and put it into `assets/config.js`:
    - `appsScriptWebAppUrl`
+6. Set `googleClientId` in `assets/config.js` to the same OAuth Client ID used by Apps Script (`UTCH_GOOGLE_CLIENT_ID`).
 
 ---
 
@@ -71,7 +72,7 @@ You will deploy a Google Apps Script web app using the files in `apps-script/`.
 
 ### Create a trip (recommended)
 
-1. Open the officer page: `<APPS_SCRIPT_WEB_APP_URL>?page=officer`
+1. Open the officer page: `https://<org-or-user>.github.io/<repo>/officer.html`
 2. Sign in with Google
 3. Fill out trip details and (optionally) select which **club gear** is available
 4. Submit
@@ -121,4 +122,3 @@ This will:
   - Don’t open `apps-script/Officer.html` directly from the repo
   - Use the deployed URL: `<APPS_SCRIPT_WEB_APP_URL>?page=officer`
   - Make sure `UTCH_SITE_BASE_URL` points to the live GitHub Pages site
-

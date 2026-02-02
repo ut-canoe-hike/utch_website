@@ -10,12 +10,15 @@ var CONFIG_KEYS = {
 function doGet(e) {
   var page = (e && e.parameter && e.parameter.page) ? String(e.parameter.page) : "";
   if (page === "officer") {
-    var template = HtmlService.createTemplateFromFile("Officer");
-    template.clientId = getProp_(CONFIG_KEYS.googleClientId) || "";
-    template.siteBaseUrl = String(getProp_(CONFIG_KEYS.siteBaseUrl) || "").replace(/\/+$/, "");
-    return template
-      .evaluate()
-      .setTitle("UTCH Officer • Create Trip");
+    var siteBaseUrl = String(getProp_(CONFIG_KEYS.siteBaseUrl) || "").replace(/\/+$/, "");
+    var html = []
+      .concat("<!doctype html><meta charset='utf-8'/>")
+      .concat("<meta name='viewport' content='width=device-width, initial-scale=1'/>")
+      .concat("<title>UTCH Officer</title>")
+      .concat("<p>This officer page is hosted on the UTCH website.</p>")
+      .concat("<p><a href='" + siteBaseUrl + "/officer.html'>Open Officer Create Trip</a></p>")
+      .join("");
+    return HtmlService.createHtmlOutput(html);
   }
 
   return ContentService.createTextOutput(

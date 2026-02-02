@@ -74,6 +74,11 @@ async function postToAppsScript(action, payload) {
   return data;
 }
 
+function getRequiredGoogleClientId() {
+  const value = getRequiredConfig("googleClientId");
+  return value;
+}
+
 // ============================================
 // Navigation & Header
 // ============================================
@@ -355,6 +360,100 @@ function initRsvpForm() {
   });
 }
 
+function initOfficerCreateTrip() {
+  const signinMount = document.querySelector("[data-officer-signin]");
+  const authStatus = document.querySelector("[data-officer-auth-status]");
+  const formCard = document.querySelector("[data-officer-form-card]");
+  const form = document.querySelector("[data-officer-form]");
+  const formStatus = document.querySelector("[data-officer-form-status]");
+
+  if (!signinMount || !formCard || !form) return;
+
+  const clientId = getRequiredGoogleClientId();
+  if (!clientId) {
+    setStatus(authStatus, "err", "Missing googleClientId in assets/config.js.");
+    return;
+  }
+
+  if (!window.google || !google.accounts || !google.accounts.id) {
+    setStatus(authStatus, "err", "Google Sign-In failed to load. Try refreshing.");
+    return;
+  }
+
+  let idToken = "";
+
+  function onCredentialResponse(response) {
+    if (!response || !response.credential) {
+      setStatus(authStatus, "err", "Sign-in failed.");
+      return;
+    }
+    idToken = response.credential;
+    setStatus(authStatus, "ok", "Signed in. You can create trips now.");
+    formCard.hidden = false;
+  }
+
+  try {
+    google.accounts.id.initialize({
+      client_id: clientId,
+      callback: onCredentialResponse,
+      auto_select: false
+    });
+    google.accounts.id.renderButton(signinMount, {
+      theme: "outline",
+      size: "large",
+      type: "standard",
+      shape: "pill",
+      text: "signin_with"
+    });
+  } catch (err) {
+    setStatus(authStatus, "err", String(err?.message || err));
+    return;
+  }
+
+  function toIsoFromLocalDatetime(value) {
+    if (!value) return "";
+    const date = new Date(value);
+    if (Number.isNaN(date.getTime())) return "";
+    return date.toISOString();
+  }
+
+  form.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    setStatus(formStatus, "", "Creating...");
+
+    if (!idToken) {
+      setStatus(formStatus, "err", "Sign in first.");
+      return;
+    }
+
+    const gearAvailable = Array.from(form.querySelectorAll('input[name="gearAvailable"]:checked')).map((el) => el.value);
+
+    const payload = {
+      idToken,
+      title: form.title.value.trim(),
+      activity: form.activity.value,
+      start: toIsoFromLocalDatetime(form.start.value),
+      end: toIsoFromLocalDatetime(form.end.value),
+      location: form.location.value.trim(),
+      difficulty: form.difficulty.value,
+      meetTime: form.meetTime.value.trim(),
+      meetPlace: form.meetPlace.value.trim(),
+      leaderName: form.leaderName.value.trim(),
+      leaderContact: form.leaderContact.value.trim(),
+      notes: form.notes.value.trim(),
+      gearAvailable
+    };
+
+    try {
+      const data = await postToAppsScript("createTrip", payload);
+      setStatus(formStatus, "ok", `Created. Trip ID: ${data.tripId}. RSVP URL: ${data.rsvpUrl}`);
+      form.reset();
+    } catch (err) {
+      setStatus(formStatus, "err", String(err?.message || err));
+    }
+  });
+}
+
 // ============================================
 // Initialize Everything
 // ============================================
@@ -369,4 +468,5 @@ document.addEventListener("DOMContentLoaded", () => {
   initCalendarEmbed();
   initSuggestForm();
   initRsvpForm();
+  initOfficerCreateTrip();
 });
