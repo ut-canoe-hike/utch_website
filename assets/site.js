@@ -387,6 +387,27 @@ function initOfficerCreateTrip() {
     formCard.hidden = false;
   }
 
+  function ensureGsiScriptLoaded() {
+    if (window.google && window.google.accounts && window.google.accounts.id) return Promise.resolve(true);
+
+    return new Promise((resolve) => {
+      // Avoid injecting multiple times.
+      if (document.querySelector('script[data-gsi-client]')) {
+        resolve(false);
+        return;
+      }
+
+      const script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.setAttribute("data-gsi-client", "true");
+      script.onload = () => resolve(true);
+      script.onerror = () => resolve(false);
+      document.head.appendChild(script);
+    });
+  }
+
   function initGsi() {
     if (!window.google || !google.accounts || !google.accounts.id) return false;
     try {
@@ -409,15 +430,23 @@ function initOfficerCreateTrip() {
     }
   }
 
-  // The GSI script is loaded async; wait briefly if it isn't ready at DOMContentLoaded.
-  (function waitForGsi(attemptsLeft) {
-    if (initGsi()) return;
-    if (attemptsLeft <= 0) {
-      setStatus(authStatus, "err", "Google Sign-In failed to load. Try refreshing.");
-      return;
-    }
-    setTimeout(() => waitForGsi(attemptsLeft - 1), 250);
-  })(20);
+  // The GSI script may be blocked by extensions or network policies; inject + wait briefly.
+  (async function bootOfficerAuth() {
+    const injected = await ensureGsiScriptLoaded();
+
+    (function waitForGsi(attemptsLeft) {
+      if (initGsi()) return;
+      if (attemptsLeft <= 0) {
+        const origin = window.location.origin || "(unknown origin)";
+        const msg = injected
+          ? `Google Sign-In failed to initialize. Check console errors. (origin: ${origin})`
+          : `Google Sign-In failed to load. Your browser/network may be blocking accounts.google.com. (origin: ${origin})`;
+        setStatus(authStatus, "err", msg);
+        return;
+      }
+      setTimeout(() => waitForGsi(attemptsLeft - 1), 250);
+    })(20);
+  })();
 
   function toIsoFromLocalDatetime(value) {
     if (!value) return "";
