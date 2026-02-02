@@ -507,15 +507,15 @@ function initOfficerCreateTrip() {
 
     return new Promise((resolve) => {
       // Avoid injecting multiple times.
-      if (document.querySelector('script[data-gsi-client]')) {
+      if (document.querySelector('script[data-gsi-client]') || document.querySelector('script[src*="accounts.google.com/gsi/client"]')) {
         resolve(false);
         return;
       }
 
       const script = document.createElement("script");
       script.src = "https://accounts.google.com/gsi/client";
+      script.type = "text/javascript";
       script.async = true;
-      script.defer = true;
       script.setAttribute("data-gsi-client", "true");
       script.onload = () => resolve(true);
       script.onerror = () => resolve(false);
