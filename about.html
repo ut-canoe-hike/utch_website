@@ -6,16 +6,17 @@
     <title>About | UT Canoe & Hiking Club</title>
     <meta
       name="description"
-      content="Learn about the University of Tennessee Canoe & Hiking Club — a student-led outdoor club organizing group trips."
+      content="Learn about the University of Tennessee Canoe & Hiking Club — Tennessee's oldest student-run outdoor adventure club since 1968."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/styles.css" />
     <script src="assets/config.js" defer></script>
     <script src="assets/site.js" defer></script>
   </head>
   <body>
+    <div class="scroll-progress" data-scroll-progress></div>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -23,7 +24,7 @@
         <a class="brand" href="index.html">
           <img src="UTCH_logo.jpg" alt="UTCH logo" />
           <div class="title">
-            <strong>UT Canoe &amp; Hiking Club</strong>
+            <strong>UT Canoe & Hiking Club</strong>
             <span>University of Tennessee</span>
           </div>
         </a>
@@ -36,66 +37,86 @@
 
         <nav class="nav" aria-label="Primary">
           <a href="index.html">Home</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="rsvp.html">RSVP</a>
-          <a href="suggest.html">Suggest</a>
+          <a href="trips.html">Trips</a>
           <a href="about.html">About</a>
-          <a href="officer.html">Officer</a>
+          <a href="suggest.html">Suggest</a>
         </nav>
       </div>
     </header>
 
     <main id="main">
-      <div class="wrap">
-        <section class="hero">
-          <h1>About UTCH</h1>
-          <p>
-            UTCH is a student-led outdoor club at the University of Tennessee. We organize group trips and help people
-            get outdoors safely and affordably.
-          </p>
-          <div class="notice">
-            Weekly meeting: <strong>7:00 PM in AMB 27</strong> unless otherwise posted.
+      <section class="hero hero--compact">
+        <div class="hero-sun" data-parallax="0.05" aria-hidden="true"></div>
+        <div class="hero-mountains" data-parallax="0.02" aria-hidden="true"></div>
+        <div class="hero-flowers" data-parallax="0.02" aria-hidden="true"></div>
+        <div class="wrap">
+          <div class="hero-layout">
+            <div class="hero-content">
+              <span class="eyebrow">Community Since 1968</span>
+              <h1>About UTCH</h1>
+              <p>Tennessee's oldest student-run outdoor adventure club, helping Vols explore the great outdoors.</p>
+            </div>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="grid two-col" aria-label="About info">
-          <article class="card">
-            <h2>What we do</h2>
-            <p>Hiking, canoeing/kayaking, camping, and other outdoor adventures—ranging from beginner-friendly to more
-              challenging trips.</p>
-          </article>
-          <article class="card">
-            <h2>How trips work</h2>
-            <p>
-              Trips are listed on the calendar. Each calendar event includes meet-up details and an RSVP link (with a
-              Trip ID). Officers use RSVPs to finalize the list and coordinate logistics.
-            </p>
-          </article>
-          <article class="card">
-            <h2>Safety</h2>
-            <p>
-              Leaders set expectations for pace, group management, and gear. If you have questions about a trip's
-              difficulty or what to bring, ask before you go.
-            </p>
-          </article>
-          <article class="card">
-            <h2>Contact</h2>
-            <p>
-              Email the club: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
-            </p>
-          </article>
-        </section>
-      </div>
+      <div class="wave-divider wave-divider--1" aria-hidden="true"></div>
+
+      <section class="section section--alt">
+        <div class="wrap">
+          <div class="section-header">
+            <span class="section-kicker animate-in">Who We Are</span>
+            <h2 class="animate-in">A Club Built on Adventure</h2>
+            <p class="animate-in">We keep trips welcoming, affordable, and member‑led.</p>
+          </div>
+
+          <div class="bento-grid">
+            <article class="card card--ornate bento-large animate-in">
+              <h2>Our Mission</h2>
+              <p>UTCH exists to get students outside—safely, affordably, and often. We build community through shared adventure and make the outdoors accessible to beginners and veterans alike.</p>
+              <p class="meta">Founded in 1968 • Student‑run • Adventure‑first</p>
+            </article>
+
+            <article class="card animate-in">
+              <h2>What We Do</h2>
+              <p>Hiking, backpacking, canoeing, kayaking, camping, climbing, and more—day trips to multi‑day expeditions.</p>
+            </article>
+
+            <article class="card animate-in">
+              <h2>Values</h2>
+              <p>We’re inclusive, safety‑minded, and excited to help you grow your skills. Leaders set clear expectations and keep groups prepared.</p>
+            </article>
+
+            <article class="card animate-in">
+              <h2>How Trips Work</h2>
+              <p>Check the calendar, RSVP, and watch for follow‑up details. Trip leaders share meet‑ups, pacing, and what to bring.</p>
+            </article>
+
+            <article class="card bento-wide animate-in">
+              <h2>Dues & Gear</h2>
+              <p>Our yearly dues are cheaper than a single trip with other programs, and we provide club gear so you can join with minimal upfront cost.</p>
+              <div class="cta">
+                <a href="trips.html" class="btn btn-secondary" data-magnetic>View Trips</a>
+                <a href="suggest.html" class="btn btn-outline" data-magnetic>Suggest a Trip</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
-      <div class="wrap">
-        <div class="footer-brand">
-          <img src="UTCH_logo.jpg" alt="UTCH logo" />
-          <span>UT Canoe &amp; Hiking Club</span>
-        </div>
-        <div class="footer-info">
-          University of Tennessee &bull; Contact: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
+      <div class="footer-landscape" aria-hidden="true"></div>
+      <div class="footer-content">
+        <div class="wrap footer-inner">
+          <div class="footer-brand">
+            <img src="UTCH_logo.jpg" alt="UT Canoe and Hiking Club logo" />
+            <span>UT Canoe &amp; Hiking Club</span>
+          </div>
+          <div class="footer-info">
+            University of Tennessee &bull; Contact: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
+            <span class="footer-officer-link">&bull; <a href="officer.html">Officer Portal</a></span>
+          </div>
         </div>
       </div>
     </footer>

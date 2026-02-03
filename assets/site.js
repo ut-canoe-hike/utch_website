@@ -102,6 +102,49 @@ function getQueryParam(name) {
   return url.searchParams.get(name) || '';
 }
 
+function escapeHTML(str) {
+  if (!str) return '';
+  return str.replace(/[&<>"']/g, char => ({
+    '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+  }[char]));
+}
+
+function getActivityClass(activity) {
+  const map = {
+    'Hike': 'activity-hike',
+    'Backpacking': 'activity-hike',
+    'Canoe/Kayak': 'activity-paddle',
+    'Camping': 'activity-camp',
+    'Climbing': 'activity-climb',
+    'Other': 'activity-social'
+  };
+  return map[activity] || 'activity-hike';
+}
+
+function getActivityIcon(activity) {
+  const icons = {
+    'activity-hike': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20l6-9 5 7 4-6 3 8" /><path d="M3 20h18" /></svg>',
+    'activity-paddle': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12c2 2 4 2 6 0s4-2 6 0 4 2 6 0" /><path d="M12 3v18" /></svg>',
+    'activity-climb': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 20l6-16 6 16" /><path d="M9 12h6" /></svg>',
+    'activity-camp': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 20l9-16 9 16" /><path d="M7 14h10" /></svg>',
+    'activity-social': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="3" /><path d="M5 20c1.5-3 4-5 7-5s5.5 2 7 5" /></svg>'
+  };
+  return icons[activity] || icons['activity-hike'];
+}
+
+function renderSkeleton(container, count = 3) {
+  if (!container) return;
+  const card = `
+    <div class="skeleton-card">
+      <div class="skeleton-line short"></div>
+      <div class="skeleton-line medium"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div>
+    </div>
+  `;
+  container.innerHTML = Array.from({ length: count }, () => card).join('');
+}
+
 // ============================================
 // Navigation & Header
 // ============================================
@@ -164,33 +207,319 @@ function initHeaderScroll() {
 }
 
 // ============================================
-// Calendar
+// Scroll Effects
 // ============================================
 
-function initCalendarEmbed() {
-  const iframe = document.querySelector('[data-calendar-embed]');
-  if (!iframe) return;
+function initScrollProgress() {
+  const progressBar = document.querySelector('[data-scroll-progress]');
+  if (!progressBar) return;
 
-  const embedUrl = getConfig().calendarEmbedUrl;
-  if (embedUrl) {
-    iframe.src = embedUrl;
-  } else {
-    const placeholder = document.querySelector('[data-calendar-placeholder]');
-    if (placeholder) placeholder.hidden = false;
-  }
+  const handle = () => {
+    const scrollTop = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = docHeight > 0 ? scrollTop / docHeight : 0;
+    progressBar.style.setProperty('--scroll', progress.toString());
+  };
 
-  const icsLink = document.querySelector('[data-calendar-ics]');
-  if (icsLink) {
-    const icsUrl = getConfig().calendarIcsUrl;
-    if (icsUrl) {
-      icsLink.href = icsUrl;
-      icsLink.target = '_blank';
-      icsLink.rel = 'noopener noreferrer';
-      icsLink.hidden = false;
-    } else {
-      icsLink.hidden = true;
+  window.addEventListener('scroll', handle, { passive: true });
+  handle();
+}
+
+function initScrollAnimations() {
+  const elements = document.querySelectorAll('.animate-in');
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  });
+
+  elements.forEach(el => observer.observe(el));
+}
+
+function initParallax() {
+  const layers = document.querySelectorAll('[data-parallax]');
+  if (!layers.length) return;
+
+  // Check for reduced motion preference
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const handle = () => {
+    const scrollY = window.scrollY;
+    layers.forEach(layer => {
+      const speed = parseFloat(layer.dataset.parallax) || 0;
+      const yPos = -(scrollY * speed);
+      layer.style.transform = `translate3d(0, ${yPos}px, 0)`;
+    });
+  };
+
+  window.addEventListener('scroll', handle, { passive: true });
+  handle();
+}
+
+// ============================================
+// Trip Card HTML Generator
+// ============================================
+
+function createTripCardHTML(trip, timeZone, includeRsvpBtn = false) {
+  const start = new Date(trip.start);
+  const dateStr = formatDateLabel(start, timeZone);
+  const timeStr = trip.isAllDay ? 'All Day' : formatTimeLabel(start, timeZone);
+  const activityClass = getActivityClass(trip.activity);
+  const icon = getActivityIcon(activityClass);
+  const difficultyClass = trip.difficulty
+    ? `difficulty-badge difficulty-badge--${trip.difficulty.toLowerCase()}`
+    : '';
+
+  const dateParts = trip.isAllDay ? `<span>${dateStr}</span><span>•</span><span>${timeStr}</span>`
+    : `<span>${dateStr}</span><span>•</span><span>${timeStr}</span>`;
+
+  return `
+    <article class="trip-card ${activityClass} animate-in" data-trip-id="${trip.tripId}">
+      <div class="trip-card-header">
+        <div class="trip-card-icon">${icon}</div>
+        <div class="trip-card-title">
+          <h3>${escapeHTML(trip.title)}</h3>
+          <div class="trip-card-date">${dateParts}</div>
+        </div>
+      </div>
+      <div class="trip-card-body">
+        ${trip.location ? `<p>${escapeHTML(trip.location)}</p>` : '<p>Details shared after RSVP.</p>'}
+      </div>
+      ${(trip.difficulty || includeRsvpBtn) ? `
+      <div class="trip-card-footer">
+        ${trip.difficulty ? `<span class="${difficultyClass}">${escapeHTML(trip.difficulty)}</span>` : '<span></span>'}
+        ${includeRsvpBtn ? '<button class="btn btn-primary" data-rsvp-trigger data-magnetic>RSVP</button>' : ''}
+      </div>` : ''}
+    </article>
+  `;
+}
+
+// ============================================
+// Homepage Trip Preview
+// ============================================
+
+function initTripPreview() {
+  const container = document.querySelector('[data-trip-preview]');
+  if (!container) return;
+
+  const timeZone = getDisplayTimeZone();
+
+  async function loadPreview() {
+    renderSkeleton(container, 3);
+    try {
+      const data = await api('GET', '/api/trips');
+      const trips = data.trips.slice(0, 3); // First 3 trips
+
+      if (!trips.length) {
+        container.innerHTML = '<p class="trips-empty">No upcoming trips scheduled. Check back soon!</p>';
+        return;
+      }
+
+      container.innerHTML = trips.map(trip => createTripCardHTML(trip, timeZone)).join('');
+
+      // Trigger animations
+      container.querySelectorAll('.trip-card').forEach((card, i) => {
+        card.style.animationDelay = `${i * 0.1}s`;
+        card.classList.add('animate-in');
+      });
+      initScrollAnimations();
+      initMagneticElements();
+    } catch (err) {
+      container.innerHTML = '<p class="trips-error">Unable to load trips.</p>';
     }
   }
+
+  loadPreview();
+}
+
+// ============================================
+// Trips Page - Full Trip List
+// ============================================
+
+function initTripsPage() {
+  const container = document.querySelector('[data-trips-list]');
+  if (!container) return;
+
+  const timeZone = getDisplayTimeZone();
+  const tripMap = new Map();
+
+  async function loadTrips() {
+    renderSkeleton(container, 6);
+    try {
+      const data = await api('GET', '/api/trips');
+      tripMap.clear();
+
+      if (!data.trips.length) {
+        container.innerHTML = '<p class="trips-empty">No upcoming trips. Check back soon or suggest one!</p>';
+        return;
+      }
+
+      container.innerHTML = data.trips.map(trip => {
+        tripMap.set(trip.tripId, trip);
+        return createTripCardHTML(trip, timeZone, true); // true = include RSVP button
+      }).join('');
+
+      // Add click handlers for RSVP buttons
+      container.querySelectorAll('[data-rsvp-trigger]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const tripId = btn.closest('[data-trip-id]').dataset.tripId;
+          openRsvpPanel(tripMap.get(tripId));
+        });
+      });
+
+      // Trigger animations
+      initScrollAnimations();
+      initMagneticElements();
+    } catch (err) {
+      container.innerHTML = '<p class="trips-error">Unable to load trips.</p>';
+    }
+  }
+
+  loadTrips();
+
+  // Expose tripMap for RSVP panel
+  window.utchTripMap = tripMap;
+}
+
+// ============================================
+// RSVP Slide-Out Panel
+// ============================================
+
+function initRsvpPanel() {
+  const panel = document.querySelector('[data-rsvp-panel]');
+  const backdrop = document.querySelector('[data-panel-backdrop]');
+  const closeBtn = document.querySelector('[data-panel-close]');
+  const form = document.querySelector('[data-rsvp-form]');
+
+  if (!panel || !form) return;
+
+  // Close handlers
+  function closePanel() {
+    panel.classList.remove('active');
+    backdrop?.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  closeBtn?.addEventListener('click', closePanel);
+  backdrop?.addEventListener('click', closePanel);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && panel.classList.contains('active')) {
+      closePanel();
+    }
+  });
+
+  // Form submission
+  const statusEl = form.querySelector('[data-form-status]');
+  const tripIdInput = form.querySelector('[data-rsvp-trip-id]');
+  const gearField = form.querySelector('[data-gear-field]');
+  const gearOptions = form.querySelector('[data-gear-options]');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    setStatus(statusEl, '', 'Submitting...');
+
+    // Honeypot check
+    if (form.querySelector('input[name="website"]')?.value) {
+      setStatus(statusEl, 'ok', 'Thanks!');
+      setTimeout(closePanel, 1500);
+      return;
+    }
+
+    try {
+      await api('POST', '/api/rsvp', {
+        tripId: tripIdInput.value,
+        name: form.name.value.trim(),
+        contact: form.contact.value.trim(),
+        carpool: form.carpool.value,
+        gearNeeded: Array.from(form.querySelectorAll('input[name="gearNeeded"]:checked')).map(el => el.value),
+        notes: form.notes.value.trim()
+      });
+
+      setStatus(statusEl, 'ok', 'RSVP submitted! See you on the trip.');
+      form.reset();
+      setTimeout(closePanel, 2000);
+    } catch (err) {
+      setStatus(statusEl, 'err', err.message);
+    }
+  });
+
+  // Expose open function globally
+  window.openRsvpPanel = function(trip) {
+    if (!trip) return;
+
+    // Set trip ID
+    tripIdInput.value = trip.tripId;
+
+    // Update panel title/info
+    const infoEl = document.querySelector('[data-panel-trip-info]');
+    if (infoEl) {
+      const timeZone = getDisplayTimeZone();
+      const start = new Date(trip.start);
+      infoEl.innerHTML = `
+        <h3>${escapeHTML(trip.title)}</h3>
+        <p>${formatDateLabel(start, timeZone)} ${trip.isAllDay ? '' : '&bull; ' + formatTimeLabel(start, timeZone)}</p>
+        ${trip.location ? `<p>${escapeHTML(trip.location)}</p>` : ''}
+      `;
+    }
+
+    // Render gear options
+    if (gearField && gearOptions) {
+      const available = Array.isArray(trip.gearAvailable) ? trip.gearAvailable : [];
+      if (available.length) {
+        gearField.hidden = false;
+        gearOptions.innerHTML = available.map(item => `
+          <label class="checkbox">
+            <input type="checkbox" name="gearNeeded" value="${item}" />
+            <span>${item.replace(/\b\w/g, c => c.toUpperCase())}</span>
+          </label>
+        `).join('');
+      } else {
+        gearField.hidden = true;
+      }
+    }
+
+    // Open panel
+    panel.classList.add('active');
+    backdrop?.classList.add('active');
+    document.body.style.overflow = 'hidden';
+
+    // Focus first input
+    form.querySelector('input')?.focus();
+  };
+}
+
+// ============================================
+// Calendar Toggle
+// ============================================
+
+function initCalendarToggle() {
+  const toggle = document.querySelector('[data-calendar-toggle]');
+  const section = document.querySelector('[data-calendar-section]');
+  const iframe = document.querySelector('[data-calendar-embed]');
+  const label = toggle?.querySelector('[data-calendar-label]');
+
+  if (!toggle || !section) return;
+
+  toggle.addEventListener('click', () => {
+    const isHidden = section.classList.toggle('is-hidden');
+    if (label) {
+      label.textContent = isHidden ? 'View Calendar' : 'Hide Calendar';
+    }
+
+    // Load iframe src on first open
+    if (!isHidden && iframe && !iframe.src) {
+      iframe.src = getConfig().calendarEmbedUrl || '';
+    }
+  });
 }
 
 // ============================================
@@ -202,6 +531,7 @@ function initSuggestForm() {
   if (!form) return;
 
   const statusEl = document.querySelector('[data-form-status]');
+  const successEl = document.querySelector('[data-form-success]');
 
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -227,144 +557,82 @@ function initSuggestForm() {
       });
       setStatus(statusEl, 'ok', 'Suggestion submitted! Thank you.');
       form.reset();
+      if (successEl) {
+        form.hidden = true;
+        successEl.hidden = false;
+      }
     } catch (err) {
       setStatus(statusEl, 'err', err.message);
     }
   });
 }
 
-function initRsvpForm() {
-  const form = document.querySelector('[data-rsvp-form]');
-  if (!form) return;
+// ============================================
+// UI Enhancements
+// ============================================
 
-  const statusEl = document.querySelector('[data-form-status]');
-  const tripIdFromUrl = getQueryParam('tripId');
-  const tripSelect = form.tripId;
-  const gearField = form.querySelector('[data-gear-field]');
-  const gearOptions = form.querySelector('[data-gear-options]');
-  const timeZone = getDisplayTimeZone();
+function initPageLoad() {
+  document.body.classList.add('is-loaded');
+}
 
-  const tripById = new Map();
+function initMagneticElements() {
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+  const targets = document.querySelectorAll('[data-magnetic]:not([data-magnetic-bound])');
+  if (!targets.length) return;
 
-  function formatTripLabel(trip) {
-    const start = new Date(trip.start);
-    const date = formatDateLabel(start, timeZone);
-    const parts = [date, `— ${trip.title}`];
-    if (!trip.isAllDay) {
-      const time = formatTimeLabel(start, timeZone);
-      parts[0] = `${date} ${time}`;
-    }
-    if (trip.location) parts.push(`(${trip.location})`);
-    return parts.join(' ');
-  }
-
-  function renderGearForTrip(tripId) {
-    if (!gearField || !gearOptions) return;
-    gearOptions.innerHTML = '';
-
-    const trip = tripById.get(tripId);
-    const available = Array.isArray(trip?.gearAvailable) ? trip.gearAvailable : [];
-    if (!available.length) {
-      gearField.hidden = true;
-      return;
-    }
-
-    gearField.hidden = false;
-    for (const item of available) {
-      const id = `gear-${item.replace(/\s+/g, '-')}`;
-      const label = document.createElement('label');
-      label.className = 'checkbox';
-      label.setAttribute('for', id);
-
-      const input = document.createElement('input');
-      input.type = 'checkbox';
-      input.name = 'gearNeeded';
-      input.value = item;
-      input.id = id;
-
-      const text = document.createElement('span');
-      text.textContent = item.replace(/\b\w/g, c => c.toUpperCase());
-
-      label.appendChild(input);
-      label.appendChild(text);
-      gearOptions.appendChild(label);
-    }
-  }
-
-  async function loadTrips() {
-    if (!tripSelect) return;
-    tripSelect.disabled = true;
-    tripSelect.innerHTML = '<option value="" selected disabled>Loading trips...</option>';
-
-    try {
-      const data = await api('GET', '/api/trips');
-      tripSelect.innerHTML = '<option value="" selected disabled>Select a trip...</option>';
-
-      for (const trip of data.trips) {
-        tripById.set(trip.tripId, trip);
-        const opt = document.createElement('option');
-        opt.value = trip.tripId;
-        opt.textContent = formatTripLabel(trip);
-        tripSelect.appendChild(opt);
-      }
-
-      if (tripIdFromUrl && tripById.has(tripIdFromUrl)) {
-        tripSelect.value = tripIdFromUrl;
-        renderGearForTrip(tripIdFromUrl);
-      } else {
-        renderGearForTrip('');
-      }
-
-      tripSelect.disabled = false;
-    } catch (err) {
-      tripSelect.innerHTML = '<option value="" selected disabled>Unable to load trips</option>';
-      setStatus(statusEl, 'err', err.message);
-    }
-  }
-
-  if (tripSelect) {
-    tripSelect.addEventListener('change', () => {
-      renderGearForTrip(tripSelect.value);
+  targets.forEach((target) => {
+    target.dataset.magneticBound = 'true';
+    target.addEventListener('mousemove', (event) => {
+      const rect = target.getBoundingClientRect();
+      const x = event.clientX - rect.left - rect.width / 2;
+      const y = event.clientY - rect.top - rect.height / 2;
+      target.style.setProperty('--mx', `${x * 0.15}px`);
+      target.style.setProperty('--my', `${y * 0.15}px`);
     });
-  }
 
-  loadTrips();
-
-  form.addEventListener('submit', async (event) => {
-    event.preventDefault();
-    setStatus(statusEl, '', 'Submitting...');
-
-    // Honeypot check
-    const honeypot = form.querySelector('input[name="website"]')?.value || '';
-    if (honeypot) {
-      setStatus(statusEl, 'ok', 'Thanks!');
-      form.reset();
-      return;
-    }
-
-    const tripId = form.tripId.value.trim();
-    if (!tripId) {
-      setStatus(statusEl, 'err', 'Please select a trip.');
-      return;
-    }
-
-    try {
-      await api('POST', '/api/rsvp', {
-        tripId,
-        name: form.name.value.trim(),
-        contact: form.contact.value.trim(),
-        carpool: form.carpool.value,
-        gearNeeded: Array.from(form.querySelectorAll('input[name="gearNeeded"]:checked')).map(el => el.value),
-        notes: form.notes.value.trim(),
-      });
-      setStatus(statusEl, 'ok', 'RSVP submitted! See you on the trip.');
-      form.reset();
-      renderGearForTrip('');
-    } catch (err) {
-      setStatus(statusEl, 'err', err.message);
-    }
+    target.addEventListener('mouseleave', () => {
+      target.style.setProperty('--mx', `0px`);
+      target.style.setProperty('--my', `0px`);
+    });
   });
 }
+
+function initPageTransitions() {
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  document.querySelectorAll('a[href]').forEach((link) => {
+    const href = link.getAttribute('href') || '';
+    if (
+      href.startsWith('#') ||
+      href.startsWith('mailto:') ||
+      href.startsWith('tel:') ||
+      link.target === '_blank'
+    ) {
+      return;
+    }
+
+    const url = new URL(link.href, window.location.href);
+    if (url.origin !== window.location.origin) return;
+
+    link.addEventListener('click', (event) => {
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
+      event.preventDefault();
+      document.body.classList.add('is-leaving');
+      const destination = link.href;
+      setTimeout(() => {
+        window.location.href = destination;
+      }, 200);
+    });
+  });
+
+  window.addEventListener('pageshow', () => {
+    document.body.classList.remove('is-leaving');
+  });
+}
+
+// ============================================
+// Officer Portal
+// ============================================
 
 function initOfficerPortal() {
   const loginSection = document.querySelector('[data-officer-login]');
@@ -644,11 +912,22 @@ function initOfficerPortal() {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  // Core
   initCurrentNav();
   initMobileMenu();
   initHeaderScroll();
-  initCalendarEmbed();
-  initSuggestForm();
-  initRsvpForm();
-  initOfficerPortal();
+  initScrollProgress();
+  initScrollAnimations();
+  initParallax();
+  initPageLoad();
+  initMagneticElements();
+  initPageTransitions();
+
+  // Page-specific
+  initTripPreview();      // Homepage
+  initTripsPage();        // Trips page
+  initRsvpPanel();        // Trips page
+  initCalendarToggle();   // Trips page
+  initSuggestForm();      // Suggest page
+  initOfficerPortal();    // Officer page
 });

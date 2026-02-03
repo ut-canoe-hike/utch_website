@@ -6,16 +6,17 @@
     <title>UT Canoe & Hiking Club</title>
     <meta
       name="description"
-      content="University of Tennessee Canoe & Hiking Club — weekly meetings and upcoming outdoor trips."
+      content="University of Tennessee Canoe & Hiking Club — Tennessee's oldest student-run outdoor adventure club."
     />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/styles.css" />
     <script src="assets/config.js" defer></script>
     <script src="assets/site.js" defer></script>
   </head>
   <body>
+    <div class="scroll-progress" data-scroll-progress></div>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -23,7 +24,7 @@
         <a class="brand" href="index.html">
           <img src="UTCH_logo.jpg" alt="UTCH logo" />
           <div class="title">
-            <strong>UT Canoe &amp; Hiking Club</strong>
+            <strong>UT Canoe & Hiking Club</strong>
             <span>University of Tennessee</span>
           </div>
         </a>
@@ -36,67 +37,114 @@
 
         <nav class="nav" aria-label="Primary">
           <a href="index.html">Home</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="rsvp.html">RSVP</a>
-          <a href="suggest.html">Suggest</a>
+          <a href="trips.html">Trips</a>
           <a href="about.html">About</a>
-          <a href="officer.html">Officer</a>
+          <a href="suggest.html">Suggest</a>
         </nav>
       </div>
     </header>
 
     <main id="main">
-      <div class="wrap">
-        <section class="hero">
-          <h1>Get outside with UTCH</h1>
-          <p>
-            We are the University of Tennessee's oldest (and best) student run, student led outdoor club. We offer the
-            widest variety of outdoor adventures of any club on campus, including hiking, backpacking, canoeing,
-            rafting, birdwatching, bouldering, caving, and more. Plus, our yearly dues are cheaper than a single
-            backpacking trip with UTOP.
-          </p>
-          <p class="hero-lede">Check the calendar for upcoming trips, and RSVP to join the roster!</p>
+      <!-- Hero Section -->
+      <section class="hero hero--full">
+        <div class="hero-sun" data-parallax="0.08" aria-hidden="true"></div>
+        <div class="hero-mountains" data-parallax="0.03" aria-hidden="true"></div>
+        <div class="hero-deer" data-parallax="0.015" aria-hidden="true"></div>
+        <div class="hero-flowers" data-parallax="0.02" aria-hidden="true"></div>
+        <div class="wrap">
+          <div class="hero-layout">
+            <div class="hero-content">
+              <span class="eyebrow">Since 1968</span>
+              <h1>Get Outside<br>With <span class="text-gradient">UTCH</span></h1>
+              <p>
+                We are the University of Tennessee's oldest (and best) student‑run, student‑led outdoor club. We offer the
+                widest variety of outdoor adventures of any club on campus, including hiking, backpacking, canoeing,
+                rafting, birdwatching, bouldering, caving, and more. Plus, our yearly dues are cheaper than a single
+                backpacking trip with UTOP.
+              </p>
+              <p class="hero-lede">Check the calendar for upcoming trips, and RSVP to join the roster!</p>
+              <div class="cta">
+                <a href="trips.html" class="btn btn-primary btn-lg" data-magnetic>View Upcoming Trips</a>
+                <a href="suggest.html" class="btn btn-secondary btn-lg" data-magnetic>Suggest a Trip</a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wave Divider 1 -->
+      <div class="wave-divider wave-divider--1" aria-hidden="true"></div>
+
+      <!-- Quick Start Section -->
+      <section class="section section--alt">
+        <div class="wrap">
+          <div class="section-header">
+            <span class="section-kicker animate-in">Start Here</span>
+            <h2 class="animate-in">Get Involved</h2>
+            <p class="animate-in">Three easy ways to jump in.</p>
+          </div>
+          <div class="bento-grid bento-grid--home">
+            <article class="card card--ornate meeting-card bento-large animate-in">
+              <div class="meeting-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 2v3M17 2v3M4 7h16M6 10h4M6 14h4M14 10h4M14 14h4M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div>
+                <span class="meeting-label">Weekly Meeting</span>
+                <strong class="meeting-time">Every Week &bull; 7:00 PM &bull; AMB 27</strong>
+              </div>
+              <p class="meeting-note">Meeting attendance is considered when selecting spots for limited‑capacity trips.</p>
+            </article>
+
+            <article class="card quick-card animate-in">
+              <h3>Upcoming Trips</h3>
+              <p>Browse the calendar, RSVP, and join the roster.</p>
+              <a href="trips.html" class="btn btn-secondary btn-sm" data-magnetic>View Trips</a>
+            </article>
+
+            <article class="card quick-card animate-in">
+              <h3>Suggest a Trip</h3>
+              <p>Share your idea and volunteer to lead.</p>
+              <a href="suggest.html" class="btn btn-primary btn-sm" data-magnetic>Suggest a Trip</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wave Divider 2 -->
+      <div class="wave-divider wave-divider--2" aria-hidden="true"></div>
+
+      <!-- Upcoming Trips Section -->
+      <section class="section">
+        <div class="wrap">
+          <div class="section-header">
+            <span class="section-kicker animate-in">Plan Ahead</span>
+            <h2 class="animate-in">Upcoming Adventures</h2>
+          </div>
+          <div class="grid three-col trip-preview" data-trip-preview></div>
           <div class="cta">
-            <a class="button primary" href="calendar.html">View Upcoming Trips</a>
-            <a class="button secondary" href="suggest.html">Suggest a Trip</a>
-            <a class="button" href="rsvp.html">RSVP to a Trip</a>
+            <a href="trips.html" class="btn btn-secondary" data-magnetic>View All Trips</a>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <section class="meeting-callout" aria-label="Weekly meeting">
-          <div class="meeting-icon" aria-hidden="true"></div>
-          <div class="meeting-text">
-            <span class="meeting-label">Weekly Meeting</span>
-            <strong class="meeting-time">7:00 PM • AMB 27</strong>
-            <p class="meeting-note">Meeting attendance is considered when selecting spots for limited‑capacity trips.</p>
-          </div>
-        </section>
-
-        <section class="grid two-col" aria-label="Quick info">
-          <article class="card">
-            <h2>How to join a trip</h2>
-            <p>
-              Find a trip on the calendar and RSVP. Officers will follow up with details and finalize the roster.
-            </p>
-          </article>
-          <article class="card">
-            <h2>Have an idea?</h2>
-            <p>
-              Suggest a trip and (optionally) volunteer to lead. We’ll work with you to get it on the calendar.
-            </p>
-          </article>
-        </section>
-      </div>
+      <!-- Wave Divider 1 Flipped -->
+      <div class="wave-divider wave-divider--1 wave-divider--flip" aria-hidden="true"></div>
     </main>
 
     <footer class="site-footer">
-      <div class="wrap">
-        <div class="footer-brand">
-          <img src="UTCH_logo.jpg" alt="UTCH logo" />
-          <span>UT Canoe &amp; Hiking Club</span>
-        </div>
-        <div class="footer-info">
-          University of Tennessee &bull; Contact: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
+      <div class="footer-landscape" aria-hidden="true"></div>
+      <div class="footer-content">
+        <div class="wrap footer-inner">
+          <div class="footer-brand">
+            <img src="UTCH_logo.jpg" alt="UT Canoe and Hiking Club logo" />
+            <span>UT Canoe &amp; Hiking Club</span>
+          </div>
+          <div class="footer-info">
+            University of Tennessee &bull; Contact: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
+            <span class="footer-officer-link">&bull; <a href="officer.html">Officer Portal</a></span>
+          </div>
         </div>
       </div>
     </footer>

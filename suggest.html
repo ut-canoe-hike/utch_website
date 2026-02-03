@@ -10,12 +10,13 @@
     />
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700&family=Work+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="assets/styles.css" />
     <script src="assets/config.js" defer></script>
     <script src="assets/site.js" defer></script>
   </head>
   <body>
+    <div class="scroll-progress" data-scroll-progress></div>
     <a class="skip-link" href="#main">Skip to content</a>
 
     <header class="site-header">
@@ -23,7 +24,7 @@
         <a class="brand" href="index.html">
           <img src="UTCH_logo.jpg" alt="UTCH logo" />
           <div class="title">
-            <strong>UT Canoe &amp; Hiking Club</strong>
+            <strong>UT Canoe & Hiking Club</strong>
             <span>University of Tennessee</span>
           </div>
         </a>
@@ -36,89 +37,125 @@
 
         <nav class="nav" aria-label="Primary">
           <a href="index.html">Home</a>
-          <a href="calendar.html">Calendar</a>
-          <a href="rsvp.html">RSVP</a>
-          <a href="suggest.html">Suggest</a>
+          <a href="trips.html">Trips</a>
           <a href="about.html">About</a>
-          <a href="officer.html">Officer</a>
+          <a href="suggest.html">Suggest</a>
         </nav>
       </div>
     </header>
 
     <main id="main">
-      <div class="wrap">
-        <section class="hero">
-          <h1>Suggest a Trip</h1>
-          <p>
-            Share an idea for a hike, paddle, or outing. If you're willing to lead (or co-lead), we'll follow up and
-            help you get it on the calendar.
-          </p>
-        </section>
+      <section class="hero hero--compact">
+        <div class="hero-sun" data-parallax="0.05" aria-hidden="true"></div>
+        <div class="hero-mountains" data-parallax="0.02" aria-hidden="true"></div>
+        <div class="hero-flowers" data-parallax="0.02" aria-hidden="true"></div>
+        <div class="wrap">
+          <div class="hero-layout">
+            <div class="hero-content">
+              <span class="eyebrow">Member‑Led Adventures</span>
+              <h1>Suggest a Trip</h1>
+              <p>Have an adventure in mind? Share your idea and we’ll help make it happen.</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
-        <section class="grid" aria-label="Suggest form">
-          <article class="card">
-            <h2>Trip Suggestion</h2>
+      <div class="wave-divider wave-divider--1" aria-hidden="true"></div>
 
-            <form class="form" data-suggest-form>
-              <div class="row">
-                <div class="field">
-                  <label for="name">Your name</label>
-                  <input id="name" name="name" autocomplete="name" required />
+      <section class="section section--alt">
+        <div class="wrap">
+          <div class="section-header">
+            <span class="section-kicker animate-in">Share an Idea</span>
+            <h2 class="animate-in">Help Shape the Adventure Calendar</h2>
+            <p class="animate-in">Got a destination or activity in mind? We love member‑led ideas.</p>
+          </div>
+
+          <div class="grid two-col">
+            <article class="card card--no-icon card--ornate">
+              <form class="form" data-suggest-form>
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="name" name="name" required placeholder=" " autocomplete="name" />
+                    <label for="name">Your Name</label>
+                  </div>
+
+                  <div class="floating-label">
+                    <input id="email" name="email" type="email" placeholder=" " autocomplete="email" />
+                    <label for="email">Email (optional)</label>
+                  </div>
                 </div>
+
                 <div class="field">
-                  <label for="email">Email (optional)</label>
-                  <input id="email" name="email" type="email" autocomplete="email" />
+                  <label for="willingToLead">Would you like to lead this trip?</label>
+                  <select id="willingToLead" name="willingToLead" required>
+                    <option value="yes">Yes, I can lead or co‑lead</option>
+                    <option value="maybe">Maybe, ask me about it</option>
+                    <option value="no">No, just sharing an idea</option>
+                  </select>
                 </div>
-              </div>
 
-              <div class="field">
-                <label for="willingToLead">Would you like to lead this trip?</label>
-                <select id="willingToLead" name="willingToLead" required>
-                  <option value="yes">Yes (I can lead / co-lead)</option>
-                  <option value="maybe">Maybe (ask me)</option>
-                  <option value="no">No (idea only)</option>
-                </select>
-              </div>
-
-              <div class="field">
-                <label for="idea">Trip idea</label>
-                <input id="idea" name="idea" placeholder="e.g., Hike at Frozen Head" required />
-              </div>
-
-              <div class="row">
-                <div class="field">
-                  <label for="location">Location (optional)</label>
-                  <input id="location" name="location" placeholder="e.g., Wartburg, TN" />
+                <div class="floating-label">
+                  <textarea id="idea" name="idea" required placeholder=" " rows="3"></textarea>
+                  <label for="idea">Trip Idea (e.g., “Hike at Frozen Head”)</label>
                 </div>
-                <div class="field">
-                  <label for="timing">When (optional)</label>
-                  <input id="timing" name="timing" placeholder="e.g., any Saturday in February" />
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="location" name="location" placeholder=" " />
+                    <label for="location">Location (optional)</label>
+                  </div>
+
+                  <div class="floating-label">
+                    <input id="timing" name="timing" placeholder=" " />
+                    <label for="timing">Preferred Timing (optional)</label>
+                  </div>
                 </div>
+
+                <div class="floating-label">
+                  <textarea id="notes" name="notes" placeholder=" " rows="4"></textarea>
+                  <label for="notes">Additional Notes (optional)</label>
+                </div>
+
+                <input name="website" tabindex="-1" autocomplete="off" class="sr-only" />
+
+                <button class="btn btn-primary btn-lg" type="submit" data-magnetic>Send Suggestion</button>
+                <div class="status" data-form-status hidden></div>
+              </form>
+
+              <div class="form-success" data-form-success hidden>
+                <div class="form-success-icon" aria-hidden="true">✓</div>
+                <h3>Trip Submitted Successfully</h3>
+                <p>Thanks for sharing. Officers will review your idea and follow up soon.</p>
               </div>
+            </article>
 
-              <div class="field">
-                <label for="notes">Notes (optional)</label>
-                <textarea id="notes" name="notes" placeholder="Distance, difficulty, carpool ideas, etc."></textarea>
-              </div>
-
-              <input name="website" tabindex="-1" autocomplete="off" style="display: none" />
-
-              <button class="button primary" type="submit">Send Suggestion</button>
-              <div class="status" data-form-status hidden></div>
-            </form>
-          </article>
-        </section>
-      </div>
+            <article class="card">
+              <h3>What Happens Next</h3>
+              <p>We review ideas weekly and often reach out to coordinate dates, difficulty, and gear needs.</p>
+              <ul class="feature-list">
+                <li>Officers follow up with details.</li>
+                <li>Trips are posted to the calendar.</li>
+                <li>RSVPs open once dates are set.</li>
+              </ul>
+              <p class="meta">Want to lead? Select “Yes” and we’ll support you.</p>
+            </article>
+          </div>
+        </div>
+      </section>
     </main>
 
     <footer class="site-footer">
-      <div class="wrap">
-        <div class="footer-brand">
-          <img src="UTCH_logo.jpg" alt="UTCH logo" />
-          <span>UT Canoe &amp; Hiking Club</span>
-        </div>
-        <div class="footer-info">
-          University of Tennessee &bull; Contact: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
+      <div class="footer-landscape" aria-hidden="true"></div>
+      <div class="footer-content">
+        <div class="wrap footer-inner">
+          <div class="footer-brand">
+            <img src="UTCH_logo.jpg" alt="UT Canoe and Hiking Club logo" />
+            <span>UT Canoe &amp; Hiking Club</span>
+          </div>
+          <div class="footer-info">
+            University of Tennessee &bull; Contact: <a href="mailto:utch1968@gmail.com">utch1968@gmail.com</a>
+            <span class="footer-officer-link">&bull; <a href="officer.html">Officer Portal</a></span>
+          </div>
         </div>
       </div>
     </footer>
