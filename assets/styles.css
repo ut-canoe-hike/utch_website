@@ -1051,8 +1051,8 @@ main {
 }
 
 .btn:hover {
-  --lift: -2px;
-  --scale: 1.02;
+  --lift: -1px;
+  --scale: 1.01;
 }
 
 .btn:active {
@@ -1065,13 +1065,13 @@ main {
   content: '';
   position: absolute;
   inset: -80% -140%;
-  background: linear-gradient(120deg, transparent 12%, rgba(255, 255, 255, 0.45) 48%, transparent 78%);
-  transform: translateX(-40%) rotate(8deg);
+  background: linear-gradient(120deg, transparent 14%, rgba(255, 255, 255, 0.25) 48%, transparent 80%);
+  transform: translateX(-30%) rotate(8deg);
   transition: transform 700ms var(--ease-out);
 }
 
 .btn:hover::after {
-  transform: translateX(40%) rotate(8deg);
+  transform: translateX(30%) rotate(8deg);
 }
 
 .btn:focus-visible {
