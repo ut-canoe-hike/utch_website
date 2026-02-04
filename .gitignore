@@ -26,6 +26,7 @@ SCRATCHPAD.md
 # Artifacts
 output/playwright/
 *.Zone.Identifier
+*:Zone.Identifier
 assets/inspo/
 home_page_updated.png
 home_page_v4.png
