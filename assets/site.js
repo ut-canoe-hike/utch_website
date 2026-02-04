@@ -232,6 +232,43 @@ function initScrollAnimations() {
   const elements = document.querySelectorAll('.animate-in');
   if (!elements.length) return;
 
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (window.gsap && window.ScrollTrigger && !prefersReducedMotion) {
+    const { gsap, ScrollTrigger } = window;
+    gsap.registerPlugin(ScrollTrigger);
+
+    elements.forEach((el, index) => {
+      // Check if element is inside a grid/flex container for stagger effect
+      const parent = el.parentElement;
+      const siblings = parent ? Array.from(parent.querySelectorAll('.animate-in')) : [];
+      const siblingIndex = siblings.indexOf(el);
+      const staggerDelay = siblingIndex > 0 ? siblingIndex * 0.08 : 0;
+
+      gsap.fromTo(
+        el,
+        {
+          autoAlpha: 0,
+          y: 40,
+          scale: 0.97
+        },
+        {
+          autoAlpha: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          delay: staggerDelay,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: el,
+            start: 'top 88%',
+            toggleActions: 'play none none none'
+          }
+        }
+      );
+    });
+    return;
+  }
+
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -245,6 +282,496 @@ function initScrollAnimations() {
   });
 
   elements.forEach(el => observer.observe(el));
+}
+
+function initHeroMotion() {
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const { gsap, ScrollTrigger } = window;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Enhanced parallax layers with more dramatic movement
+  const layers = [
+    { selector: '.mountain-layer--1', speed: 0.12, scale: 1.02 },
+    { selector: '.mountain-layer--2', speed: 0.2, scale: 1.03 },
+    { selector: '.mountain-layer--3', speed: 0.32, scale: 1.04 },
+    { selector: '.mountain-layer--4', speed: 0.45, scale: 1.05 },
+    { selector: '.mountain-layer--5', speed: 0.6, scale: 1.06 }
+  ];
+
+  layers.forEach(({ selector, speed, scale }) => {
+    const layer = hero.querySelector(selector);
+    if (!layer) return;
+
+    // Set initial state
+    gsap.set(layer, { transformOrigin: 'center bottom' });
+
+    gsap.to(layer, {
+      yPercent: -40 * speed,
+      scale: scale,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.5
+      }
+    });
+  });
+
+  // Trees parallax - moves faster than mountains (foreground)
+  const trees = hero.querySelector('.hero-trees');
+  if (trees) {
+    gsap.to(trees, {
+      yPercent: -35,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.5
+      }
+    });
+  }
+
+  // Sun rises and glows as you scroll
+  const sun = hero.querySelector('.hero-sun-wrapper');
+  if (sun) {
+    gsap.to(sun, {
+      y: -60,
+      scale: 1.15,
+      rotation: 8,
+      transformOrigin: 'center center',
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.8
+      }
+    });
+
+    // Animate sun rays rotation
+    const sunRays = sun.querySelector('.sun-rays');
+    if (sunRays) {
+      gsap.to(sunRays, {
+        rotation: 360,
+        transformOrigin: 'center center',
+        duration: 120,
+        ease: 'none',
+        repeat: -1
+      });
+    }
+  }
+
+  // Hero content parallax (moves up slower, creating depth)
+  const heroContent = hero.querySelector('.hero-content');
+  if (heroContent) {
+    gsap.to(heroContent, {
+      yPercent: -15,
+      ease: 'none',
+      scrollTrigger: {
+        trigger: hero,
+        start: 'top top',
+        end: 'bottom top',
+        scrub: 0.3
+      }
+    });
+  }
+}
+
+// ============================================
+// Advanced Hero Animations
+// ============================================
+
+function initHeroEntrance() {
+  const hero = document.querySelector('.hero');
+  if (!hero) return;
+  if (!window.gsap) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const { gsap } = window;
+
+  // Create a timeline for orchestrated entrance
+  const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+  // Animate sky gradient (fade in)
+  const sky = hero.querySelector('.hero-sky');
+  if (sky) {
+    tl.fromTo(sky, { opacity: 0 }, { opacity: 1, duration: 1.2 }, 0);
+  }
+
+  // Sun entrance - rises from below
+  const sun = hero.querySelector('.hero-sun-wrapper');
+  if (sun) {
+    tl.fromTo(sun,
+      { y: 80, opacity: 0, scale: 0.8 },
+      { y: 0, opacity: 1, scale: 1, duration: 1.4, ease: 'power2.out' },
+      0.2
+    );
+  }
+
+  // Mountain layers fade/slide in from bottom with stagger
+  const mountains = hero.querySelectorAll('.mountain-layer');
+  if (mountains.length) {
+    tl.fromTo(mountains,
+      { yPercent: 15, opacity: 0 },
+      {
+        yPercent: 0,
+        opacity: 1,
+        duration: 1.2,
+        stagger: 0.1,
+        ease: 'power2.out'
+      },
+      0.3
+    );
+  }
+
+  // Trees slide up
+  const trees = hero.querySelector('.hero-trees');
+  if (trees) {
+    tl.fromTo(trees,
+      { yPercent: 30, opacity: 0 },
+      { yPercent: 0, opacity: 1, duration: 1, ease: 'power2.out' },
+      0.6
+    );
+  }
+
+  // Hero content entrance
+  const heroContent = hero.querySelector('.hero-content');
+  if (heroContent) {
+    tl.fromTo(heroContent,
+      { y: 50, opacity: 0, scale: 0.96 },
+      { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'power3.out' },
+      0.5
+    );
+
+    // Animate headline words
+    const headline = heroContent.querySelector('h1');
+    if (headline) {
+      animateHeadline(headline, tl);
+    }
+
+    // Animate eyebrow
+    const eyebrow = heroContent.querySelector('.eyebrow');
+    if (eyebrow) {
+      tl.fromTo(eyebrow,
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6 },
+        0.6
+      );
+    }
+
+    // Animate paragraphs
+    const paragraphs = heroContent.querySelectorAll('p');
+    if (paragraphs.length) {
+      tl.fromTo(paragraphs,
+        { y: 25, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 },
+        0.9
+      );
+    }
+
+    // Animate CTA buttons
+    const buttons = heroContent.querySelectorAll('.btn');
+    if (buttons.length) {
+      tl.fromTo(buttons,
+        { y: 20, opacity: 0, scale: 0.95 },
+        { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: 'back.out(1.5)' },
+        1.1
+      );
+    }
+  }
+}
+
+function animateHeadline(headline, timeline) {
+  if (!window.gsap) return;
+  const { gsap } = window;
+
+  // Store original HTML
+  const originalHTML = headline.innerHTML;
+
+  // Split text into words while preserving HTML structure
+  const words = [];
+  const tempDiv = document.createElement('div');
+  tempDiv.innerHTML = originalHTML;
+
+  function processNode(node) {
+    if (node.nodeType === Node.TEXT_NODE) {
+      const text = node.textContent;
+      const wordArray = text.split(/(\s+)/);
+      return wordArray.map(word => {
+        if (word.trim() === '') return word;
+        return `<span class="word-wrap"><span class="word">${word}</span></span>`;
+      }).join('');
+    } else if (node.nodeType === Node.ELEMENT_NODE) {
+      const clone = node.cloneNode(false);
+      clone.innerHTML = Array.from(node.childNodes).map(processNode).join('');
+      return clone.outerHTML;
+    }
+    return '';
+  }
+
+  headline.innerHTML = Array.from(tempDiv.childNodes).map(processNode).join('');
+
+  // Add CSS for word animation
+  const style = document.createElement('style');
+  style.textContent = `
+    .word-wrap {
+      display: inline-block;
+      overflow: hidden;
+      vertical-align: bottom;
+    }
+    .word {
+      display: inline-block;
+    }
+  `;
+  document.head.appendChild(style);
+
+  // Animate words
+  const wordElements = headline.querySelectorAll('.word');
+  if (wordElements.length && timeline) {
+    timeline.fromTo(wordElements,
+      { yPercent: 110, opacity: 0 },
+      {
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.8,
+        stagger: 0.04,
+        ease: 'power3.out'
+      },
+      0.7
+    );
+  }
+}
+
+// ============================================
+// Section Reveal Animations
+// ============================================
+
+function initSectionReveals() {
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const { gsap, ScrollTrigger } = window;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Animate section headers with a special reveal
+  const sectionHeaders = document.querySelectorAll('.section-header');
+  sectionHeaders.forEach(header => {
+    const kicker = header.querySelector('.section-kicker');
+    const h2 = header.querySelector('h2');
+    const p = header.querySelector('p');
+    const icon = header.querySelector('.section-icon');
+
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: header,
+        start: 'top 80%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+    if (icon) {
+      tl.fromTo(icon,
+        { scale: 0, rotation: -180 },
+        { scale: 1, rotation: 0, duration: 0.6, ease: 'back.out(2)' },
+        0
+      );
+    }
+
+    if (kicker) {
+      tl.fromTo(kicker,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5 },
+        0.1
+      );
+    }
+
+    if (h2) {
+      tl.fromTo(h2,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.7, ease: 'power3.out' },
+        0.2
+      );
+    }
+
+    if (p) {
+      tl.fromTo(p,
+        { y: 30, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.6 },
+        0.35
+      );
+    }
+  });
+
+  // Bento grid items with stagger
+  const bentoGrids = document.querySelectorAll('.bento-grid');
+  bentoGrids.forEach(grid => {
+    const cards = grid.querySelectorAll('.card');
+    if (!cards.length) return;
+
+    gsap.fromTo(cards,
+      { y: 60, opacity: 0, scale: 0.95 },
+      {
+        y: 0,
+        opacity: 1,
+        scale: 1,
+        duration: 0.8,
+        stagger: 0.12,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: grid,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  });
+}
+
+// ============================================
+// Card Hover Effects
+// ============================================
+
+function initCardHoverEffects() {
+  if (!window.gsap) return;
+  if (window.matchMedia('(pointer: coarse)').matches) return;
+
+  const { gsap } = window;
+
+  // Apply organic rotation to trip cards
+  const tripCards = document.querySelectorAll('.trip-card');
+  tripCards.forEach((card, index) => {
+    // Pseudo-random rotation based on index
+    const rotations = [-1.2, 0.8, -0.5, 1.1, -0.9, 0.4, -0.7, 1.3];
+    const rotation = rotations[index % rotations.length];
+
+    gsap.set(card, {
+      rotation: rotation,
+      transformOrigin: 'center center'
+    });
+
+    // Enhanced hover effect
+    card.addEventListener('mouseenter', () => {
+      gsap.to(card, {
+        rotation: 0,
+        scale: 1.02,
+        y: -8,
+        boxShadow: '0 20px 40px rgba(61, 47, 36, 0.15)',
+        duration: 0.4,
+        ease: 'power2.out'
+      });
+    });
+
+    card.addEventListener('mouseleave', () => {
+      gsap.to(card, {
+        rotation: rotation,
+        scale: 1,
+        y: 0,
+        boxShadow: '0 4px 12px rgba(61, 47, 36, 0.1)',
+        duration: 0.5,
+        ease: 'power2.out'
+      });
+    });
+  });
+}
+
+// ============================================
+// Footer Parallax
+// ============================================
+
+function initFooterParallax() {
+  const footer = document.querySelector('.site-footer');
+  if (!footer) return;
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const { gsap, ScrollTrigger } = window;
+  gsap.registerPlugin(ScrollTrigger);
+
+  const footerMountains = footer.querySelectorAll('.footer-mountain-layer');
+  const footerTrees = footer.querySelector('.footer-trees');
+
+  footerMountains.forEach((layer, index) => {
+    const speed = 0.15 + (index * 0.1);
+    gsap.fromTo(layer,
+      { yPercent: 20 * speed },
+      {
+        yPercent: -10 * speed,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: footer,
+          start: 'top bottom',
+          end: 'bottom bottom',
+          scrub: 0.5
+        }
+      }
+    );
+  });
+
+  if (footerTrees) {
+    gsap.fromTo(footerTrees,
+      { yPercent: 15 },
+      {
+        yPercent: -5,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: footer,
+          start: 'top bottom',
+          end: 'bottom bottom',
+          scrub: 0.5
+        }
+      }
+    );
+  }
+
+  // Footer content fade in
+  const footerContent = footer.querySelector('.footer-content');
+  if (footerContent) {
+    gsap.fromTo(footerContent,
+      { y: 30, opacity: 0 },
+      {
+        y: 0,
+        opacity: 1,
+        duration: 0.8,
+        ease: 'power2.out',
+        scrollTrigger: {
+          trigger: footer,
+          start: 'top 90%',
+          toggleActions: 'play none none none'
+        }
+      }
+    );
+  }
+}
+
+// ============================================
+// Background Gradient Shift on Scroll
+// ============================================
+
+function initGradientShift() {
+  if (!window.gsap || !window.ScrollTrigger) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  const { gsap, ScrollTrigger } = window;
+  gsap.registerPlugin(ScrollTrigger);
+
+  // Subtle body background shift as you scroll
+  ScrollTrigger.create({
+    trigger: 'body',
+    start: 'top top',
+    end: 'bottom bottom',
+    onUpdate: (self) => {
+      const progress = self.progress;
+      // Shift from warm cream to slightly cooler tone
+      const warmth = 1 - (progress * 0.15);
+      document.body.style.setProperty('--scroll-warmth', warmth.toString());
+    }
+  });
 }
 
 // ============================================
@@ -314,6 +841,7 @@ function renderTrips(container, trips, timeZone, options = {}) {
 
   initScrollAnimations();
   initMagneticElements();
+  initCardHoverEffects();
 }
 
 // ============================================
@@ -888,15 +1416,22 @@ function initOfficerPortal() {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
-  // Core
+  // Core navigation and UI
   initCurrentNav();
   initMobileMenu();
   initHeaderScroll();
   initScrollProgress();
-  initScrollAnimations();
   initPageLoad();
   initMagneticElements();
   initPageTransitions();
+
+  // GSAP Animations (order matters for visual effect)
+  initHeroEntrance();     // Hero intro animation sequence
+  initHeroMotion();       // Parallax scroll effects
+  initSectionReveals();   // Section header animations
+  initScrollAnimations(); // General scroll-triggered animations
+  initFooterParallax();   // Footer mountain parallax
+  initGradientShift();    // Background color shift on scroll
 
   // Page-specific
   initTripPreview();      // Homepage
@@ -905,4 +1440,8 @@ document.addEventListener('DOMContentLoaded', () => {
   initCalendarEmbed();    // Trips page
   initSuggestForm();      // Suggest page
   initOfficerPortal();    // Officer page
+
+  // Apply card effects after trips are loaded
+  // (called again in renderTrips for dynamic content)
+  setTimeout(initCardHoverEffects, 500);
 });
