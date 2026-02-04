@@ -28,6 +28,15 @@
   --mountain-3: #7a99a3;
   --mountain-4: #5d7f8a;
   --mountain-5: #3d5c66;
+  --hero-parallax-range: clamp(140px, 20vw, 260px);
+  --footer-parallax-range: clamp(70px, 12vw, 150px);
+  --mountain-overlap: clamp(110px, 16vw, 210px);
+  --mountain-lift: clamp(64px, 12vw, 170px);
+  --tree-ground: clamp(12px, 2.2vw, 28px);
+  --footer-overlap: clamp(48px, 8vw, 110px);
+  --footer-mountain-lift: clamp(36px, 7vw, 110px);
+  --footer-tree-ground: clamp(8px, 1.8vw, 20px);
+  --footer-seam: clamp(8px, 1.8vw, 20px);
   --line: rgba(61, 54, 50, 0.15);
   --line-strong: rgba(61, 54, 50, 0.25);
 
@@ -156,8 +165,16 @@ body::after {
 }
 
 /* Ensure content is above backgrounds */
-.site-header,
-main,
+.site-header {
+  position: relative;
+  z-index: var(--z-sticky);
+}
+
+main {
+  position: relative;
+  z-index: var(--z-base);
+}
+
 .site-footer {
   position: relative;
   z-index: var(--z-base);
@@ -316,6 +333,17 @@ blockquote {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  color: transparent;
+  display: inline-block;
+  text-shadow: none;
+}
+
+.text-gradient .word {
+  background: linear-gradient(135deg, var(--rust), var(--coral), var(--mustard));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
 }
 
 /* ---------- Utility Classes ---------- */
@@ -563,11 +591,11 @@ blockquote {
 }
 
 .hero--full {
-  min-height: calc(100vh - var(--header-height));
+  min-height: clamp(540px, 82vh, 720px);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  padding-top: clamp(2rem, 5vw, 4rem);
+  padding-top: clamp(1.5rem, 4vw, 3rem);
   padding-bottom: 0;
   border-radius: 0;
   margin-bottom: 0;
@@ -690,58 +718,71 @@ blockquote {
   bottom: 0;
   left: 0;
   right: 0;
-  height: 65%;
+  height: 62%;
   z-index: 2;
   pointer-events: none;
 }
 
 .mountain-layer {
   position: absolute;
-  bottom: 0;
+  bottom: calc(-1 * var(--mountain-overlap) + var(--mountain-lift));
   left: 0;
   width: 100%;
-  transition: transform 0.1s ease-out;
+  --parallax-offset: 0px;
 }
 
 .mountain-layer--1 {
-  height: 95%;
+  height: calc(95% + var(--mountain-overlap));
   z-index: 1;
+  --parallax-depth: 0.12;
+  --parallax-offset: -120px;
 }
 
 .mountain-layer--2 {
-  height: 88%;
+  height: calc(88% + var(--mountain-overlap));
   z-index: 2;
+  --parallax-depth: 0.24;
+  --parallax-offset: -65px;
 }
 
 .mountain-layer--3 {
-  height: 78%;
+  height: calc(78% + var(--mountain-overlap));
   z-index: 3;
+  --parallax-depth: 0.40;
+  --parallax-offset: -5px;
 }
 
 .mountain-layer--4 {
-  height: 68%;
+  height: calc(68% + var(--mountain-overlap));
   z-index: 4;
+  --parallax-depth: 0.58;
+  --parallax-offset: 60px;
 }
 
 .mountain-layer--5 {
-  height: 58%;
+  height: calc(58% + var(--mountain-overlap));
   z-index: 5;
+  --parallax-depth: 0.78;
+  --parallax-offset: 130px;
 }
 
-/* Pine trees silhouette */
+/* Pine trees silhouette - stays grounded (no parallax) */
 .hero-trees {
   position: absolute;
-  bottom: 0;
+  bottom: calc(-1 * var(--tree-ground));
   left: 0;
   right: 0;
-  height: 100px;
+  height: calc(110px + var(--tree-ground));
   z-index: 7;
   pointer-events: none;
 }
 
 .hero-trees svg {
+  position: absolute;
+  bottom: var(--tree-ground);
   width: 100%;
   height: 100%;
+  display: block;
 }
 
 /* Hero layout */
@@ -752,7 +793,7 @@ blockquote {
   gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
   z-index: 8;
-  padding-bottom: clamp(8rem, 20vw, 14rem);
+  padding-bottom: clamp(6rem, 16vw, 10rem);
 }
 
 /* Hero content */
@@ -853,15 +894,15 @@ blockquote {
 
 .meeting-time {
   font-family: var(--font-display);
-  font-size: 1.5rem;
-  font-weight: 700;
+  font-size: 1.7rem;
+  font-weight: 800;
   color: var(--bark);
 }
 
 .meeting-location {
   font-family: var(--font-display);
-  font-size: 1.35rem;
-  font-weight: 700;
+  font-size: 1.65rem;
+  font-weight: 800;
   color: var(--bark);
 }
 
@@ -881,6 +922,9 @@ blockquote {
   border-radius: 50%;
   background: rgba(253, 251, 247, 0.92);
   box-shadow: var(--shadow-sm);
+}
+
+.has-gsap .section-icon {
   /* Hidden initially, GSAP will reveal */
   opacity: 0;
   visibility: hidden;
@@ -917,7 +961,7 @@ main {
 }
 
 .section:last-child {
-  padding-bottom: 0;
+  padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
 }
 
 .section--alt {
@@ -1878,7 +1922,8 @@ legend {
 .footer-mountains {
   position: relative;
   height: 220px;
-  margin-top: -40px;
+  margin-top: 0;
+  margin-bottom: 0;
   overflow: hidden;
 }
 
@@ -1887,21 +1932,28 @@ legend {
   bottom: 0;
   left: 0;
   width: 100%;
+  --parallax-offset: 0px;
 }
 
 .footer-mountain--1 {
   height: 100%;
   z-index: 1;
+  --parallax-depth: 0.18;
+  --parallax-offset: -50px;
 }
 
 .footer-mountain--2 {
   height: 85%;
   z-index: 2;
+  --parallax-depth: 0.32;
+  --parallax-offset: -5px;
 }
 
 .footer-mountain--3 {
   height: 70%;
   z-index: 3;
+  --parallax-depth: 0.48;
+  --parallax-offset: 45px;
 }
 
 .footer-trees {
@@ -1911,13 +1963,23 @@ legend {
   width: 100%;
   height: 80px;
   z-index: 4;
+  display: block;
+}
+
+.footer-trees svg {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
 }
 
 .footer-content {
   position: relative;
   background: linear-gradient(180deg, #3d5560 0%, #2d4048 100%);
-  padding: 2rem 0;
+  padding: calc(2rem + var(--footer-seam)) 0 2rem;
   border-top: 2px solid rgba(253, 251, 247, 0.15);
+  margin-top: calc(-1 * var(--footer-seam));
 }
 
 .footer-content::before {
@@ -2324,7 +2386,8 @@ textarea:focus-visible,
 
   .footer-mountains {
     height: 140px;
-    margin-top: -30px;
+    margin-top: 0;
+    margin-bottom: 0;
   }
 }
 

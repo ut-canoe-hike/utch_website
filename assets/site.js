@@ -104,6 +104,54 @@ function escapeHTML(str) {
   }[char]));
 }
 
+function getGsapScroll() {
+  if (!window.gsap || !window.ScrollTrigger) return null;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+  const { gsap, ScrollTrigger } = window;
+  gsap.registerPlugin(ScrollTrigger);
+  return { gsap, ScrollTrigger };
+}
+
+function getCssNumber(variableName, fallback = 0) {
+  const rawValue = getComputedStyle(document.documentElement).getPropertyValue(variableName);
+  const parsed = parseFloat(rawValue);
+  return Number.isFinite(parsed) ? parsed : fallback;
+}
+
+function getParallaxDepth(element) {
+  if (!element) return 0;
+  const depth = parseFloat(getComputedStyle(element).getPropertyValue('--parallax-depth'));
+  return Number.isFinite(depth) ? depth : 0;
+}
+
+function getParallaxOffset(element) {
+  if (!element) return 0;
+  const offset = parseFloat(getComputedStyle(element).getPropertyValue('--parallax-offset'));
+  return Number.isFinite(offset) ? offset : 0;
+}
+
+function applyParallax(gsap, elements, options) {
+  const { trigger, start, end, scrub, getShift } = options;
+  elements.forEach((element) => {
+    const depth = getParallaxDepth(element);
+    if (!depth) return;
+    const offset = getParallaxOffset(element);
+    gsap.set(element, { y: offset });
+    gsap.to(element, {
+      y: () => offset - getShift() * depth,
+      ease: 'none',
+      overwrite: 'auto',
+      scrollTrigger: {
+        trigger,
+        start,
+        end,
+        scrub,
+        invalidateOnRefresh: true
+      }
+    });
+  });
+}
+
 const ACTIVITY_META = {
   Hike: {
     className: 'activity-hike',
@@ -232,22 +280,23 @@ function initScrollAnimations() {
   // Exclude elements handled by other animation systems:
   // - .section-header children (handled by initSectionReveals)
   // - .bento-grid .card (handled by bento grid animation in initSectionReveals)
-  const elements = document.querySelectorAll(
-    '.animate-in:not(.section-header .animate-in):not(.bento-grid .animate-in)'
+  const elements = Array.from(document.querySelectorAll('.animate-in')).filter(
+    (el) => !el.closest('.section-header') && !el.closest('.bento-grid')
   );
   if (!elements.length) return;
 
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  if (window.gsap && window.ScrollTrigger && !prefersReducedMotion) {
-    const { gsap, ScrollTrigger } = window;
-    gsap.registerPlugin(ScrollTrigger);
+  const gsapContext = getGsapScroll();
+  if (gsapContext) {
+    const { gsap } = gsapContext;
 
     elements.forEach((el) => {
       // Check if element is inside a grid/flex container for stagger effect
       const parent = el.parentElement;
-      const siblings = parent ? Array.from(parent.querySelectorAll(
-        '.animate-in:not(.section-header .animate-in):not(.bento-grid .animate-in)'
-      )) : [];
+      const siblings = parent
+        ? Array.from(parent.querySelectorAll('.animate-in')).filter(
+          (node) => !node.closest('.section-header') && !node.closest('.bento-grid')
+        )
+        : [];
       const siblingIndex = siblings.indexOf(el);
       const staggerDelay = siblingIndex > 0 ? siblingIndex * 0.08 : 0;
 
@@ -255,19 +304,19 @@ function initScrollAnimations() {
         el,
         {
           autoAlpha: 0,
-          y: 40,
-          scale: 0.97
+          y: 32,
+          scale: 0.98
         },
         {
           autoAlpha: 1,
           y: 0,
           scale: 1,
-          duration: 0.8,
+          duration: 0.6,
           delay: staggerDelay,
           ease: 'power3.out',
           scrollTrigger: {
             trigger: el,
-            start: 'top 88%',
+            start: 'top 92%',
             toggleActions: 'play none none none'
           }
         }
@@ -294,53 +343,24 @@ function initScrollAnimations() {
 function initHeroMotion() {
   const hero = document.querySelector('.hero');
   if (!hero) return;
-  if (!window.gsap || !window.ScrollTrigger) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
-  const { gsap, ScrollTrigger } = window;
-  gsap.registerPlugin(ScrollTrigger);
+  const gsapContext = getGsapScroll();
+  if (!gsapContext) return;
+  const { gsap } = gsapContext;
 
-  // Parallax layers - distant mountains move slower than close ones
-  // Using positive yPercent so mountains move DOWN as you scroll (revealing sky)
-  // This prevents exposing the background below
-  const layers = [
-    { selector: '.mountain-layer--1', speed: 0.15 },  // Furthest - moves slowly
-    { selector: '.mountain-layer--2', speed: 0.25 },
-    { selector: '.mountain-layer--3', speed: 0.4 },
-    { selector: '.mountain-layer--4', speed: 0.55 },
-    { selector: '.mountain-layer--5', speed: 0.75 }   // Closest - moves most
-  ];
-
-  layers.forEach(({ selector, speed }) => {
-    const layer = hero.querySelector(selector);
-    if (!layer) return;
-
-    gsap.to(layer, {
-      yPercent: 40 * speed,  // Move DOWN (positive) to reveal sky, not expose bottom
-      ease: 'none',
-      scrollTrigger: {
-        trigger: hero,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.3
-      }
-    });
-  });
-
-  // Trees parallax - foreground moves most
-  const trees = hero.querySelector('.hero-trees');
-  if (trees) {
-    gsap.to(trees, {
-      yPercent: 25,  // Move down with scroll
-      ease: 'none',
-      scrollTrigger: {
-        trigger: hero,
-        start: 'top top',
-        end: 'bottom top',
-        scrub: 0.3
-      }
+  const mountainShift = () => getCssNumber('--hero-parallax-range', 90);
+  const mountainLayers = Array.from(hero.querySelectorAll('.mountain-layer'));
+  if (mountainLayers.length) {
+    applyParallax(gsap, mountainLayers, {
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: 0.3,
+      getShift: mountainShift
     });
   }
+
+  // Trees stay grounded - no parallax animation
 
   // Sun rises slightly as you scroll down
   const sun = hero.querySelector('.hero-sun-wrapper');
@@ -392,7 +412,7 @@ function initHeroEntrance() {
   // Animate sky gradient (fade in)
   const sky = hero.querySelector('.hero-sky');
   if (sky) {
-    tl.fromTo(sky, { opacity: 0 }, { opacity: 1, duration: 1.2 }, 0);
+    tl.fromTo(sky, { opacity: 0 }, { opacity: 1, duration: 0.9 }, 0);
   }
 
   // Sun entrance - rises from below
@@ -400,7 +420,7 @@ function initHeroEntrance() {
   if (sun) {
     tl.fromTo(sun,
       { y: 80, opacity: 0, scale: 0.8 },
-      { y: 0, opacity: 1, scale: 1, duration: 1.4, ease: 'power2.out' },
+      { y: 0, opacity: 1, scale: 1, duration: 1.1, ease: 'power2.out' },
       0.2
     );
   }
@@ -413,7 +433,7 @@ function initHeroEntrance() {
       {
         yPercent: 0,
         opacity: 1,
-        duration: 1.2,
+        duration: 0.95,
         stagger: 0.1,
         ease: 'power2.out'
       },
@@ -426,7 +446,7 @@ function initHeroEntrance() {
   if (trees) {
     tl.fromTo(trees,
       { yPercent: 30, opacity: 0 },
-      { yPercent: 0, opacity: 1, duration: 1, ease: 'power2.out' },
+      { yPercent: 0, opacity: 1, duration: 0.8, ease: 'power2.out' },
       0.6
     );
   }
@@ -436,7 +456,7 @@ function initHeroEntrance() {
   if (heroContent) {
     tl.fromTo(heroContent,
       { y: 50, opacity: 0, scale: 0.96 },
-      { y: 0, opacity: 1, scale: 1, duration: 1, ease: 'power3.out' },
+      { y: 0, opacity: 1, scale: 1, duration: 0.8, ease: 'power3.out' },
       0.5
     );
 
@@ -451,7 +471,7 @@ function initHeroEntrance() {
     if (eyebrow) {
       tl.fromTo(eyebrow,
         { y: 20, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.6 },
+        { y: 0, opacity: 1, duration: 0.5 },
         0.6
       );
     }
@@ -461,7 +481,7 @@ function initHeroEntrance() {
     if (paragraphs.length) {
       tl.fromTo(paragraphs,
         { y: 25, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.7, stagger: 0.1 },
+        { y: 0, opacity: 1, duration: 0.55, stagger: 0.08 },
         0.9
       );
     }
@@ -471,7 +491,7 @@ function initHeroEntrance() {
     if (buttons.length) {
       tl.fromTo(buttons,
         { y: 20, opacity: 0, scale: 0.95 },
-        { y: 0, opacity: 1, scale: 1, duration: 0.6, stagger: 0.1, ease: 'back.out(1.5)' },
+        { y: 0, opacity: 1, scale: 1, duration: 0.5, stagger: 0.08, ease: 'back.out(1.5)' },
         1.1
       );
     }
@@ -530,11 +550,9 @@ function animateHeadline(headline, timeline) {
 // ============================================
 
 function initSectionReveals() {
-  if (!window.gsap || !window.ScrollTrigger) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const { gsap, ScrollTrigger } = window;
-  gsap.registerPlugin(ScrollTrigger);
+  const gsapContext = getGsapScroll();
+  if (!gsapContext) return;
+  const { gsap } = gsapContext;
 
   // Animate section headers with a special reveal
   const sectionHeaders = document.querySelectorAll('.section-header');
@@ -556,35 +574,35 @@ function initSectionReveals() {
     const tl = gsap.timeline({
       scrollTrigger: {
         trigger: header,
-        start: 'top 80%',
+        start: 'top 88%',
         toggleActions: 'play none none none'
       }
     });
 
     if (icon) {
       tl.to(icon,
-        { scale: 1, rotation: 0, autoAlpha: 1, duration: 0.6, ease: 'back.out(2)' },
+        { scale: 1, rotation: 0, autoAlpha: 1, duration: 0.5, ease: 'back.out(1.8)' },
         0
       );
     }
 
     if (kicker) {
       tl.to(kicker,
-        { y: 0, autoAlpha: 1, duration: 0.5 },
+        { y: 0, autoAlpha: 1, duration: 0.45 },
         0.1
       );
     }
 
     if (h2) {
       tl.to(h2,
-        { y: 0, autoAlpha: 1, duration: 0.7, ease: 'power3.out' },
+        { y: 0, autoAlpha: 1, duration: 0.6, ease: 'power3.out' },
         0.2
       );
     }
 
     if (p) {
       tl.to(p,
-        { y: 0, autoAlpha: 1, duration: 0.6 },
+        { y: 0, autoAlpha: 1, duration: 0.5 },
         0.35
       );
     }
@@ -603,12 +621,12 @@ function initSectionReveals() {
       y: 0,
       autoAlpha: 1,
       scale: 1,
-      duration: 0.8,
-      stagger: 0.12,
+      duration: 0.6,
+      stagger: 0.1,
       ease: 'power3.out',
       scrollTrigger: {
         trigger: grid,
-        start: 'top 85%',
+        start: 'top 90%',
         toggleActions: 'play none none none'
       }
     });
@@ -669,47 +687,24 @@ function initCardHoverEffects() {
 function initFooterParallax() {
   const footer = document.querySelector('.site-footer');
   if (!footer) return;
-  if (!window.gsap || !window.ScrollTrigger) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const { gsap, ScrollTrigger } = window;
-  gsap.registerPlugin(ScrollTrigger);
+  const gsapContext = getGsapScroll();
+  if (!gsapContext) return;
+  const { gsap } = gsapContext;
 
   const footerMountains = footer.querySelectorAll('.footer-mountain-layer');
-  const footerTrees = footer.querySelector('.footer-trees');
 
-  footerMountains.forEach((layer, index) => {
-    const speed = 0.15 + (index * 0.1);
-    gsap.fromTo(layer,
-      { yPercent: 20 * speed },
-      {
-        yPercent: -10 * speed,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: footer,
-          start: 'top bottom',
-          end: 'bottom bottom',
-          scrub: 0.5
-        }
-      }
-    );
-  });
-
-  if (footerTrees) {
-    gsap.fromTo(footerTrees,
-      { yPercent: 15 },
-      {
-        yPercent: -5,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: footer,
-          start: 'top bottom',
-          end: 'bottom bottom',
-          scrub: 0.5
-        }
-      }
-    );
+  const mountainShift = () => getCssNumber('--footer-parallax-range', 70);
+  if (footerMountains.length) {
+    applyParallax(gsap, Array.from(footerMountains), {
+      trigger: footer,
+      start: 'top bottom',
+      end: 'bottom bottom',
+      scrub: 0.5,
+      getShift: mountainShift
+    });
   }
+
+  // Trees stay grounded - no parallax animation
 
   // Footer content fade in
   const footerContent = footer.querySelector('.footer-content');
@@ -736,11 +731,9 @@ function initFooterParallax() {
 // ============================================
 
 function initGradientShift() {
-  if (!window.gsap || !window.ScrollTrigger) return;
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  const { gsap, ScrollTrigger } = window;
-  gsap.registerPlugin(ScrollTrigger);
+  const gsapContext = getGsapScroll();
+  if (!gsapContext) return;
+  const { ScrollTrigger } = gsapContext;
 
   // Subtle body background shift as you scroll
   ScrollTrigger.create({
@@ -1398,6 +1391,12 @@ function initOfficerPortal() {
 // ============================================
 
 document.addEventListener('DOMContentLoaded', () => {
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.documentElement.classList.add('has-js');
+  if (window.gsap && window.ScrollTrigger && !prefersReducedMotion) {
+    document.documentElement.classList.add('has-gsap');
+  }
+
   // Core navigation and UI
   initCurrentNav();
   initMobileMenu();
