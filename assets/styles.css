@@ -749,10 +749,10 @@ blockquote {
   position: relative;
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: clamp(2rem, 6vw, 5rem);
+  gap: clamp(1.5rem, 4vw, 3rem);
   align-items: center;
   z-index: 8;
-  padding-bottom: clamp(12rem, 30vw, 20rem);
+  padding-bottom: clamp(8rem, 20vw, 14rem);
 }
 
 /* Hero content */
@@ -1871,13 +1871,14 @@ legend {
   margin-top: auto;
   padding: 0;
   overflow: hidden;
-  background: linear-gradient(180deg, var(--cream) 0%, #e8ddd0 100%);
+  background: transparent;
 }
 
 /* Layered mountain footer */
 .footer-mountains {
   position: relative;
-  height: 200px;
+  height: 220px;
+  margin-top: -40px;
   overflow: hidden;
 }
 
@@ -2290,11 +2291,11 @@ textarea:focus-visible,
   }
 
   .hero-layout {
-    padding-bottom: clamp(6rem, 20vw, 10rem);
+    padding-bottom: clamp(5rem, 15vw, 8rem);
   }
 
   .hero--compact .hero-layout {
-    padding-bottom: clamp(5rem, 15vw, 8rem);
+    padding-bottom: clamp(4rem, 12vw, 6rem);
   }
 
   .cta {
@@ -2322,7 +2323,8 @@ textarea:focus-visible,
   }
 
   .footer-mountains {
-    height: 120px;
+    height: 140px;
+    margin-top: -30px;
   }
 }
 

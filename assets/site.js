@@ -304,11 +304,11 @@ function initHeroMotion() {
   // Using positive yPercent so mountains move DOWN as you scroll (revealing sky)
   // This prevents exposing the background below
   const layers = [
-    { selector: '.mountain-layer--1', speed: 0.05 },  // Furthest - barely moves
-    { selector: '.mountain-layer--2', speed: 0.1 },
-    { selector: '.mountain-layer--3', speed: 0.18 },
-    { selector: '.mountain-layer--4', speed: 0.28 },
-    { selector: '.mountain-layer--5', speed: 0.4 }   // Closest - moves most
+    { selector: '.mountain-layer--1', speed: 0.15 },  // Furthest - moves slowly
+    { selector: '.mountain-layer--2', speed: 0.25 },
+    { selector: '.mountain-layer--3', speed: 0.4 },
+    { selector: '.mountain-layer--4', speed: 0.55 },
+    { selector: '.mountain-layer--5', speed: 0.75 }   // Closest - moves most
   ];
 
   layers.forEach(({ selector, speed }) => {
@@ -316,13 +316,13 @@ function initHeroMotion() {
     if (!layer) return;
 
     gsap.to(layer, {
-      yPercent: 25 * speed,  // Move DOWN (positive) to reveal sky, not expose bottom
+      yPercent: 40 * speed,  // Move DOWN (positive) to reveal sky, not expose bottom
       ease: 'none',
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
         end: 'bottom top',
-        scrub: 0.5
+        scrub: 0.3
       }
     });
   });
@@ -331,13 +331,13 @@ function initHeroMotion() {
   const trees = hero.querySelector('.hero-trees');
   if (trees) {
     gsap.to(trees, {
-      yPercent: 12,  // Move down with scroll
+      yPercent: 25,  // Move down with scroll
       ease: 'none',
       scrollTrigger: {
         trigger: hero,
         start: 'top top',
         end: 'bottom top',
-        scrub: 0.5
+        scrub: 0.3
       }
     });
   }
