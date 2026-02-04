@@ -14,7 +14,7 @@ import { submitSuggestion } from './handlers/suggest';
 import { verifyOfficer } from './handlers/officer';
 
 export default {
-  async fetch(request: Request, env: Env): Promise<Response> {
+  async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     // Handle CORS preflight
     if (request.method === 'OPTIONS') {
       return corsResponse(env, new Response(null, { status: 204 }));
@@ -68,6 +68,15 @@ export default {
         });
       } else {
         response = error('Not found', 404);
+      }
+
+      const shouldAutoSync = response.ok && (
+        (path === '/api/trips' && method === 'POST') ||
+        (path.match(/^\/api\/trips\/[^/]+$/) && (method === 'PATCH' || method === 'DELETE'))
+      );
+
+      if (shouldAutoSync) {
+        ctx.waitUntil(syncTripsWithCalendar(env, siteBaseUrl));
       }
 
       return corsResponse(env, response);

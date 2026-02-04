@@ -2260,6 +2260,10 @@ textarea:focus-visible,
 
 /* Mobile Navigation (max 767px) */
 @media (max-width: 767px) {
+  :root {
+    --header-height: 64px;
+  }
+
   body::after {
     display: none;
   }
@@ -2279,6 +2283,8 @@ textarea:focus-visible,
     align-items: center;
     justify-content: center;
     gap: 0.5rem;
+    padding: calc(2rem + env(safe-area-inset-top)) 1.25rem calc(2rem + env(safe-area-inset-bottom));
+    overflow-y: auto;
     opacity: 0;
     visibility: hidden;
     transition: opacity var(--transition), visibility var(--transition);
@@ -2291,11 +2297,13 @@ textarea:focus-visible,
   }
 
   .nav a {
-    width: auto;
     padding: 1rem 2rem;
     font-size: 1.1rem;
     letter-spacing: 0.12em;
     border-radius: var(--radius);
+    width: 100%;
+    max-width: 280px;
+    text-align: center;
     opacity: 0;
     transform: translateY(20px);
     transition:
@@ -2326,9 +2334,22 @@ textarea:focus-visible,
     display: none;
   }
 
+  .header-inner {
+    gap: 1rem;
+  }
+
+  .brand img {
+    width: 44px;
+    height: 44px;
+  }
+
   .hero:not(.hero--compact) {
     padding: 2.5rem 1.5rem;
     padding-bottom: 0;
+  }
+
+  .hero--full {
+    min-height: clamp(420px, 75vh, 560px);
   }
 
   .hero--compact {
@@ -2343,7 +2364,7 @@ textarea:focus-visible,
   }
 
   .hero h1 {
-    font-size: 1.75rem;
+    font-size: 2rem;
   }
 
   .hero-sun-wrapper {
@@ -2362,6 +2383,29 @@ textarea:focus-visible,
 
   .hero--compact .hero-layout {
     padding-bottom: clamp(4rem, 12vw, 6rem);
+  }
+
+  .hero .hero-lede,
+  .hero p {
+    font-size: 1rem;
+  }
+
+  .section {
+    padding: 2rem 0;
+  }
+
+  .section:last-child {
+    padding-bottom: 2.5rem;
+  }
+
+  .section-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+  }
+
+  .section-header::after {
+    width: 70px;
+    margin-top: 1rem;
   }
 
   .cta {
@@ -2385,13 +2429,86 @@ textarea:focus-visible,
   }
 
   .card {
-    padding: 1.5rem;
+    padding: 1.25rem;
   }
 
   .footer-mountains {
     height: 140px;
     margin-top: 0;
     margin-bottom: 0;
+  }
+
+  .grid {
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+
+  .trip-card {
+    padding: 1.25rem;
+  }
+
+  .trip-card-header {
+    gap: 0.75rem;
+  }
+
+  .trip-card-icon {
+    width: 42px;
+    height: 42px;
+  }
+
+  .trip-card-date {
+    flex-wrap: wrap;
+  }
+
+  .trip-card-footer {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .trip-card-footer .btn {
+    width: 100%;
+  }
+
+  .difficulty-badge {
+    align-self: flex-start;
+  }
+
+  .form {
+    gap: 1.25rem;
+  }
+
+  .form .btn {
+    width: 100%;
+    justify-self: stretch;
+  }
+
+  textarea {
+    min-height: 120px;
+  }
+
+  fieldset {
+    padding: 1rem;
+  }
+
+  .slide-panel-header,
+  .slide-panel-body,
+  .slide-panel-footer {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+
+  .slide-panel-body {
+    padding-top: 1.25rem;
+  }
+
+  .slide-panel-footer {
+    padding-bottom: 1.25rem;
+  }
+
+  .meeting-time,
+  .meeting-location {
+    font-size: 1.4rem;
   }
 }
 
