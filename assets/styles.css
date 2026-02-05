@@ -1505,6 +1505,10 @@ main {
   min-height: 1.1rem;
 }
 
+.bento-grid--officer .row .floating-label {
+  padding-top: 1.35rem;
+}
+
 /* Floating Label */
 .floating-label {
   position: relative;
