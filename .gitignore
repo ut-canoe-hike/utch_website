@@ -23,11 +23,19 @@ node_modules/
 .codex/
 SCRATCHPAD.md
 
+# Claude Code
+.claude/
+
+# Build output
+dist/
+
 # Artifacts
 output/playwright/
+screenshots/
 *.Zone.Identifier
 *:Zone.Identifier
 assets/inspo/
+src/assets/inspo/
 home_page_updated.png
 home_page_v4.png
 officer_portal.png

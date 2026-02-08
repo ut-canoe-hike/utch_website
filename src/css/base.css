@@ -1,0 +1,543 @@
+/* ============================================
+   base.css — Design tokens, reset, typography, utilities
+   "The Great Outdoors" — Art Nouveau poster aesthetic
+   ============================================ */
+
+/* ---------- Design Tokens ---------- */
+:root {
+  /* Color Palette — warm saturated earth tones from the poster */
+  --cream: #f2e6cd;
+  --cream-light: #f7f0de;
+  --cream-warm: #ecdbb8;
+  --cream-dark: #e0cfa5;
+  --paper: #f5ead4;
+
+  /* Browns */
+  --bark: #2a1f14;
+  --bark-soft: #5c4a3a;
+  --bark-mid: #7a6652;
+  --brown: #8b6914;
+  --brown-outline: #6b4c2a;
+  --brown-outline-light: #8b6e4a;
+  --brown-outline-dark: #4a3520;
+  --brown-outline-subtle: #b8a07a;
+
+  /* Warm accents — directly from the poster */
+  --burnt-orange: #c4622d;
+  --rust: #a24a28;
+  --terracotta: #b85538;
+  --coral: #d47258;
+  --mustard: #d4a035;
+  --mustard-light: #e8be58;
+  --mustard-dark: #b8882a;
+  --peach: #e8a878;
+  --dusty-rose: #c99a8e;
+
+  /* Cool accents */
+  --sage: #6b8f5e;
+  --sage-dark: #4a6842;
+  --sage-light: #8aad7a;
+  --teal: #4a7a78;
+  --teal-deep: #355a58;
+  --teal-dark: #2a4a48;
+
+  /* Sky / Mountain palette */
+  --sky-warm: #f0dbb8;
+  --sky-peach: #e8c8a0;
+  --mountain-1: #c9b8a8;
+  --mountain-2: #a8b5b8;
+  --mountain-3: #7a99a3;
+  --mountain-4: #5d7f8a;
+  --mountain-5: #3d5c66;
+
+  /* Functional colors */
+  --success: #5a8a5e;
+  --error: #b84a32;
+
+  /* The poster's border system — thick, ornamental */
+  --border-thick: 4px solid var(--brown-outline);
+  --border-medium: 3px solid var(--brown-outline);
+  --border-thin: 2px solid var(--brown-outline-light);
+  --border-ornate: 1.5px solid var(--brown-outline-subtle);
+  --border-accent: 3px solid var(--burnt-orange);
+
+  /* Shadows — warm tones */
+  --shadow-soft: 0 2px 8px rgba(42, 31, 20, 0.08);
+  --shadow-hover: 0 8px 24px rgba(42, 31, 20, 0.15);
+  --shadow-card: 2px 3px 0 var(--brown-outline-subtle);
+
+  /* Typography — poster-scale */
+  --font-display-bold: 'Abril Fatface', Georgia, serif;
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body: 'DM Sans', system-ui, sans-serif;
+
+  /* Layout */
+  --max-width: 1200px;
+  --max-width-narrow: 760px;
+  --header-height: 80px;
+
+  /* Hero parallax */
+  --hero-parallax-range: clamp(140px, 20vw, 260px);
+  --footer-parallax-range: clamp(70px, 12vw, 150px);
+  --mountain-overlap: clamp(110px, 16vw, 210px);
+  --mountain-lift: clamp(64px, 12vw, 170px);
+  --tree-ground: clamp(12px, 2.2vw, 28px);
+  --footer-overlap: clamp(48px, 8vw, 110px);
+  --footer-mountain-lift: clamp(36px, 7vw, 110px);
+  --footer-tree-ground: clamp(8px, 1.8vw, 20px);
+  --footer-seam: clamp(8px, 1.8vw, 20px);
+
+  /* Transitions */
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --transition-fast: 150ms var(--ease-out);
+  --transition: 250ms var(--ease-out);
+  --transition-slow: 400ms var(--ease-out);
+
+  /* Border Radius — poster = sharp or barely rounded */
+  --radius-sm: 4px;
+  --radius: 6px;
+  --radius-full: 9999px;
+
+  /* Z-Index Scale */
+  --z-base: 1;
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-fixed: 300;
+  --z-modal-backdrop: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-tooltip: 700;
+
+  /* Scroll Progress */
+  --scroll: 0;
+}
+
+html.page-home {
+  --hero-parallax-range: clamp(180px, 24vw, 320px);
+}
+
+/* ---------- Reset ---------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: 16px;
+}
+
+/* ---------- Body — aged poster paper ---------- */
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.7;
+  color: var(--bark);
+  background-color: var(--cream);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow-x: hidden;
+}
+
+body.is-loaded {
+  animation: fadeInPage 500ms var(--ease-out) both;
+}
+
+body.is-leaving {
+  opacity: 0;
+  transition: opacity 250ms var(--ease-out);
+}
+
+@keyframes fadeInPage {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+/* Heavy paper grain texture — screen-print feel */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(42, 31, 20, 0.06) 1px, transparent 0);
+  background-size: 8px 8px;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Poster frame removed — was distracting on screen */
+
+/* ---------- Typography — POSTER SCALE ---------- */
+h1, h2 {
+  font-family: var(--font-display-bold);
+  font-weight: 400;
+  line-height: 1.05;
+  color: var(--bark);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  /* Letterpress shadow — thicker, more visible */
+  text-shadow: 3px 3px 0 rgba(107, 76, 42, 0.18);
+}
+
+h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--bark);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* Poster-scale sizing — much larger than before */
+h1 {
+  font-size: clamp(3rem, 8vw, 6rem);
+  line-height: 1.0;
+}
+
+h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+}
+
+h3 {
+  font-size: clamp(1.2rem, 2.5vw, 1.6rem);
+}
+
+h4 {
+  font-size: 1.15rem;
+}
+
+h5 {
+  font-size: 1rem;
+}
+
+h6 {
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+}
+
+p {
+  color: var(--bark-soft);
+  margin-bottom: 1em;
+}
+
+p:last-child {
+  margin-bottom: 0;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--burnt-orange);
+}
+
+strong, b { font-weight: 700; }
+em, i { font-style: italic; }
+small { font-size: 0.875em; }
+
+blockquote {
+  padding-left: 1.5rem;
+  border-left: 4px solid var(--mustard);
+  font-style: italic;
+  color: var(--bark-soft);
+}
+
+/* Text gradient utility — warmer range */
+.text-gradient {
+  background: linear-gradient(135deg, var(--burnt-orange), var(--mustard), var(--peach));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
+  text-shadow: none;
+}
+
+/* Section kicker — ornate poster badge */
+.section-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--bark-soft);
+  padding: 0.45rem 1.2rem;
+  border: 2px solid var(--brown-outline-light);
+  background: var(--cream-light);
+}
+
+.section-kicker::before,
+.section-kicker::after {
+  content: '\2726';
+  font-size: 0.6em;
+  color: var(--mustard);
+}
+
+/* Eyebrow label — poster badge style */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--bark-soft);
+  padding: 0.4rem 1.1rem;
+  border: 2px solid var(--brown-outline-light);
+  background: var(--cream-light);
+}
+
+/* ---------- Ornamental Divider (reusable) ---------- */
+.ornament {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin: 1.5rem 0;
+  color: var(--brown-outline-light);
+  font-size: 0.65rem;
+  letter-spacing: 0.4em;
+}
+
+.ornament::before,
+.ornament::after {
+  content: '';
+  flex: 1;
+  max-width: 120px;
+  height: 2px;
+  background: var(--brown-outline-subtle);
+}
+
+/* ---------- Utility Classes ---------- */
+.wrap {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 clamp(1.5rem, 5vw, 3rem);
+}
+
+.wrap--narrow {
+  max-width: var(--max-width-narrow);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.is-hidden {
+  display: none !important;
+}
+
+/* Skip Link */
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  background: var(--teal);
+  color: var(--cream-light);
+  padding: 1rem 1.5rem;
+  border-radius: var(--radius);
+  z-index: var(--z-tooltip);
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 1rem;
+  top: 1rem;
+  outline: 3px solid var(--mustard);
+  outline-offset: 2px;
+}
+
+/* ---------- Scroll Progress Bar ---------- */
+.scroll-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, var(--burnt-orange), var(--mustard), var(--burnt-orange));
+  transform-origin: left;
+  transform: scaleX(var(--scroll));
+  z-index: var(--z-tooltip);
+}
+
+/* ---------- Focus States ---------- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+.btn:focus-visible {
+  outline: 3px solid var(--mustard);
+  outline-offset: 2px;
+}
+
+/* ---------- Selection ---------- */
+::selection {
+  background: rgba(196, 98, 45, 0.25);
+  color: var(--bark);
+}
+
+/* ---------- Scrollbar ---------- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--cream-dark);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--brown-outline-light);
+  border: 2px solid var(--cream-dark);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--brown-outline);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--brown-outline-light) var(--cream-dark);
+}
+
+/* ---------- Reduced Motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
+
+  .animate-in {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .btn:hover,
+  .card:hover,
+  .trip-card:hover {
+    transform: none;
+  }
+}
+
+/* ---------- High Contrast ---------- */
+@media (prefers-contrast: high) {
+  :root {
+    --bark: #0a0806;
+    --bark-soft: #2a1f14;
+    --cream: #ffffff;
+    --cream-light: #ffffff;
+    --brown-outline: #2a1a0a;
+    --brown-outline-light: #4a3520;
+    --brown-outline-subtle: #6a5530;
+  }
+
+  .card,
+  .btn,
+  input,
+  select,
+  textarea {
+    border-width: 4px;
+  }
+}
+
+/* ---------- Print Styles ---------- */
+@media print {
+  body::before,
+  .scroll-progress,
+  .site-header,
+  .site-footer,
+  .hero-sun {
+    display: none !important;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .hero {
+    background: none;
+    border: 1px solid #ccc;
+  }
+
+  .card {
+    box-shadow: none;
+    border: 1px solid #ccc;
+    break-inside: avoid;
+  }
+
+  a {
+    text-decoration: underline;
+  }
+}
+
+/* ---------- Touch Optimizations ---------- */
+@media (hover: none) and (pointer: coarse) {
+  .btn {
+    min-height: 48px;
+  }
+
+  .nav a {
+    min-height: 44px;
+  }
+
+  .card:hover,
+  .trip-card:hover {
+    transform: none;
+  }
+}
+
+/* ---------- Safe Area Insets ---------- */
+@supports (padding: env(safe-area-inset-top)) {
+  .site-header {
+    padding-top: env(safe-area-inset-top);
+  }
+
+  .site-footer {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .slide-panel {
+    padding-right: env(safe-area-inset-right);
+  }
+}
+
+/* Smooth scroll anchor offset */
+:target {
+  scroll-margin-top: calc(var(--header-height) + 2rem);
+}

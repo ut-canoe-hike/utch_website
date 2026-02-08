@@ -1,0 +1,98 @@
+/* ============================================
+   pages.css — Page-specific overrides
+   Unique poster treatments per page
+   ============================================ */
+
+/* ---------- Officer Dashboard ---------- */
+.page-officer .bento-grid--officer {
+  align-items: start;
+}
+
+/* Officer cards get darker poster frame */
+.page-officer .card--portal {
+  border-width: 4px;
+}
+
+/* ---------- Suggest Page ---------- */
+.page-suggest .card--ornate {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* ---------- Trips Page ---------- */
+.page-trips .three-col {
+  gap: 2rem;
+}
+
+/* ---------- About Page ---------- */
+/* Long all-caps headings need smaller size to stay readable */
+.page-about .bento-grid .card h3 {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  line-height: 1.25;
+  letter-spacing: 0.04em;
+}
+
+/* About FAQ grid — override bento 4-col to clean 2-col */
+@media (min-width: 768px) {
+  .page-about .bento-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .page-about .bento-grid .card {
+    grid-column: span 1;
+  }
+
+  /* Last odd card + the wide card both span full */
+  .page-about .bento-grid .card:nth-child(5) {
+    grid-column: 1 / -1;
+  }
+
+  .page-about .bento-grid .bento-wide {
+    grid-column: 1 / -1;
+  }
+}
+
+/* ---------- Feature list (used in About) ---------- */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.25rem 0 0;
+  display: grid;
+  gap: 0.6rem;
+  color: var(--bark-soft);
+}
+
+.feature-list li {
+  position: relative;
+  padding-left: 1.75rem;
+  line-height: 1.7;
+}
+
+/* Four-pointed star bullet — poster ornament */
+.feature-list li::before {
+  content: '\2726';
+  position: absolute;
+  left: 0;
+  top: 0.15em;
+  color: var(--mustard);
+  font-size: 0.85em;
+}
+
+/* ---------- FAQ sections (About page) ---------- */
+.faq-item {
+  padding: 1.5rem 0;
+  border-bottom: 2px solid var(--brown-outline-subtle);
+}
+
+.faq-item:first-child {
+  padding-top: 0;
+}
+
+.faq-item h3 {
+  margin-bottom: 0.5rem;
+  color: var(--bark);
+}
+
+.faq-item p {
+  color: var(--bark-soft);
+}

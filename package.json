@@ -1,0 +1,26 @@
+{
+  "name": "utch_website",
+  "version": "1.0.0",
+  "description": "A simple website for the University of Tennessee Canoe & Hiking Club.",
+  "main": "index.js",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ut-canoe-hike/ut-canoe-hike.github.io.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ut-canoe-hike/ut-canoe-hike.github.io/issues"
+  },
+  "homepage": "https://github.com/ut-canoe-hike/ut-canoe-hike.github.io#readme",
+  "devDependencies": {
+    "vite": "^7.3.1",
+    "vite-plugin-handlebars": "^2.0.0"
+  }
+}

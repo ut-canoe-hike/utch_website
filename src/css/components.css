@@ -1,0 +1,1032 @@
+/* ============================================
+   components.css — Buttons, cards, forms, slide panel
+   Art Nouveau poster aesthetic — thick ornamental borders,
+   vintage trading-card cards, poster call-out buttons
+   ============================================ */
+
+/* =============================================
+   BUTTONS — Poster Call-Out Stamps
+   ============================================= */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 2rem;
+  font-family: var(--font-body);
+  font-weight: 700;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  text-decoration: none;
+  border: 3px solid var(--brown-outline);
+  cursor: pointer;
+  white-space: nowrap;
+  position: relative;
+  /* Hard poster shadow — no blur, offset like a letterpress print */
+  box-shadow: 4px 4px 0 var(--brown-outline-subtle);
+  transition:
+    transform 180ms var(--ease-out),
+    box-shadow 180ms var(--ease-out),
+    background 180ms var(--ease-out);
+}
+
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--brown-outline-subtle);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0 var(--brown-outline-subtle);
+}
+
+.btn:focus-visible {
+  outline: 3px solid var(--mustard);
+  outline-offset: 3px;
+}
+
+/* Primary — burnt orange poster stamp */
+.btn-primary {
+  background: var(--burnt-orange);
+  color: var(--cream-light);
+  border-color: var(--brown-outline-dark);
+}
+
+.btn-primary:hover {
+  background: var(--rust);
+  color: var(--cream-light);
+}
+
+/* Secondary — deep teal badge */
+.btn-secondary {
+  background: var(--teal);
+  color: var(--cream-light);
+  border-color: var(--brown-outline-dark);
+}
+
+.btn-secondary:hover {
+  background: var(--teal-deep);
+  color: var(--cream-light);
+}
+
+/* Outline — wirey poster border, fills on hover */
+.btn-outline {
+  background: var(--cream-light);
+  color: var(--burnt-orange);
+  border-color: var(--burnt-orange);
+}
+
+.btn-outline:hover {
+  background: var(--burnt-orange);
+  color: var(--cream-light);
+}
+
+/* Ghost — minimal, for secondary actions */
+.btn-ghost {
+  background: transparent;
+  color: var(--bark-soft);
+  border: 2px solid var(--brown-outline-subtle);
+  box-shadow: 2px 2px 0 rgba(107, 76, 42, 0.1);
+}
+
+.btn-ghost:hover {
+  background: var(--cream-warm);
+  border-color: var(--brown-outline);
+  color: var(--bark);
+}
+
+/* Sizes */
+.btn-sm {
+  padding: 0.6rem 1.25rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  box-shadow: 3px 3px 0 var(--brown-outline-subtle);
+}
+
+.btn-lg {
+  padding: 1.15rem 2.75rem;
+  font-size: 0.9rem;
+  box-shadow: 5px 5px 0 var(--brown-outline-subtle);
+}
+
+/* =============================================
+   CARDS — Vintage Trading Card / Poster Panel
+   Thick outer border, inner ornamental border,
+   colored header band, aged paper feel
+   ============================================= */
+.card {
+  position: relative;
+  background: var(--cream-light);
+  padding: clamp(1.75rem, 4vw, 2.75rem);
+  border: 4px solid var(--brown-outline);
+  box-shadow: 5px 5px 0 var(--brown-outline-subtle);
+  overflow: hidden;
+  transition:
+    transform 300ms var(--ease-out),
+    box-shadow 300ms var(--ease-out);
+}
+
+/* Inner ornamental border on EVERY card */
+.card::before {
+  content: '';
+  position: absolute;
+  inset: 7px;
+  border: 1.5px solid var(--brown-outline-subtle);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Thick colored header band */
+.card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    var(--burnt-orange) 0%,
+    var(--mustard) 40%,
+    var(--sage) 70%,
+    var(--teal) 100%
+  );
+  z-index: 3;
+}
+
+.card:hover {
+  transform: translate(-2px, -3px);
+  box-shadow: 7px 8px 0 var(--brown-outline-subtle);
+}
+
+.card > * {
+  position: relative;
+  z-index: 1;
+}
+
+.card h2,
+.card h3 {
+  margin-bottom: 0.75rem;
+}
+
+.card p {
+  line-height: 1.75;
+}
+
+/* Ornate card — thicker inner border */
+.card--ornate {
+  border-width: 4px;
+  padding: clamp(2rem, 5vw, 3rem);
+}
+
+.card--ornate::before {
+  inset: 8px;
+  border: 2px solid var(--brown-outline-subtle);
+}
+
+.card--ornate::after {
+  height: 8px;
+}
+
+/* Centered card */
+.card--center {
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* Portal card — admin feel with darker frame */
+.card--portal {
+  border-color: var(--brown-outline-dark);
+  box-shadow: 5px 5px 0 rgba(42, 31, 20, 0.2);
+}
+
+.card--portal::after {
+  height: 10px;
+  background: linear-gradient(
+    90deg,
+    var(--rust) 0%,
+    var(--burnt-orange) 30%,
+    var(--mustard) 60%,
+    var(--teal) 100%
+  );
+}
+
+/* Card meta divider */
+.card .meta {
+  margin-top: 1.5rem;
+  padding-top: 1.25rem;
+  border-top: 2px solid var(--brown-outline-subtle);
+  font-size: 0.875rem;
+  color: var(--bark-soft);
+}
+
+/* =============================================
+   TRIP CARDS — Adventure Stamps
+   ============================================= */
+.trip-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--cream-light);
+  padding: 1.75rem;
+  border: 4px solid var(--brown-outline);
+  box-shadow: 4px 4px 0 var(--brown-outline-subtle);
+  transition:
+    transform 350ms var(--ease-spring),
+    box-shadow 350ms var(--ease-out);
+}
+
+/* Inner border */
+.trip-card::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid var(--brown-outline-subtle);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Colored header band */
+.trip-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(90deg, var(--teal), var(--sage), var(--mustard));
+  z-index: 1;
+}
+
+.trip-card > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* Organic scatter rotations — hand-placed poster feel */
+.trip-card:nth-child(8n+1) { transform: rotate(-1.5deg); }
+.trip-card:nth-child(8n+2) { transform: rotate(1.0deg); }
+.trip-card:nth-child(8n+3) { transform: rotate(-0.6deg); }
+.trip-card:nth-child(8n+4) { transform: rotate(1.3deg); }
+.trip-card:nth-child(8n+5) { transform: rotate(-1.1deg); }
+.trip-card:nth-child(8n+6) { transform: rotate(0.5deg); }
+.trip-card:nth-child(8n+7) { transform: rotate(-0.8deg); }
+.trip-card:nth-child(8n+8) { transform: rotate(1.6deg); }
+
+@media (hover: hover) {
+  .trip-card:hover {
+    transform: rotate(0deg) translate(-3px, -5px) scale(1.02);
+    box-shadow: 8px 10px 0 var(--brown-outline-subtle);
+  }
+}
+
+.trip-card:focus-within {
+  transition-delay: 0s;
+}
+
+.trip-card-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.trip-card-icon {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  border: 3px solid var(--brown-outline);
+  box-shadow: 2px 2px 0 var(--brown-outline-subtle);
+}
+
+.trip-card-icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+.trip-card-title {
+  flex: 1;
+}
+
+.trip-card-title h3 {
+  font-size: 1.2rem;
+  margin-bottom: 0.25rem;
+}
+
+.trip-card-date {
+  font-size: 0.85rem;
+  color: var(--bark-soft);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.trip-card-body {
+  flex: 1;
+  margin-bottom: 1.25rem;
+}
+
+.trip-card-body p {
+  font-size: 0.95rem;
+  color: var(--bark-soft);
+}
+
+.trip-card-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-top: 1.25rem;
+  border-top: 3px solid var(--brown-outline-subtle);
+}
+
+/* Difficulty Badge — small poster stamp */
+.difficulty-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4rem 0.85rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  border: 2px solid var(--brown-outline-subtle);
+  background: var(--cream);
+  color: var(--bark-soft);
+  box-shadow: 2px 2px 0 rgba(107, 76, 42, 0.1);
+}
+
+.difficulty-badge--easy {
+  border-color: var(--sage);
+  background: rgba(107, 143, 94, 0.12);
+  color: var(--sage-dark);
+}
+
+.difficulty-badge--moderate {
+  border-color: var(--mustard-dark);
+  background: rgba(212, 160, 53, 0.12);
+  color: var(--mustard-dark);
+}
+
+.difficulty-badge--hard {
+  border-color: var(--rust);
+  background: rgba(162, 74, 40, 0.12);
+  color: var(--rust);
+}
+
+/* Activity type icon colors */
+.activity-hike .trip-card-icon {
+  background: var(--sage);
+  color: var(--cream-light);
+}
+
+.activity-paddle .trip-card-icon {
+  background: var(--teal);
+  color: var(--cream-light);
+}
+
+.activity-climb .trip-card-icon {
+  background: var(--burnt-orange);
+  color: var(--cream-light);
+}
+
+.activity-camp .trip-card-icon {
+  background: var(--mustard);
+  color: var(--cream-light);
+}
+
+.activity-social .trip-card-icon {
+  background: var(--dusty-rose);
+  color: var(--cream-light);
+}
+
+/* =============================================
+   MEETING CARD
+   ============================================= */
+.meeting-card {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.meeting-icon {
+  width: 64px;
+  height: 64px;
+  background: var(--mustard);
+  border: 4px solid var(--brown-outline);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--cream-light);
+  box-shadow: 3px 3px 0 var(--brown-outline-subtle);
+}
+
+.meeting-icon svg {
+  width: 28px;
+  height: 28px;
+  fill: none;
+  stroke: currentColor;
+}
+
+.meeting-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.meeting-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--bark-soft);
+  padding: 0.3rem 0.8rem;
+  border: 2px solid var(--brown-outline-subtle);
+  background: var(--cream);
+  align-self: flex-start;
+  box-shadow: 2px 2px 0 rgba(107, 76, 42, 0.08);
+}
+
+.meeting-time {
+  font-family: var(--font-display-bold);
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  color: var(--bark);
+  text-shadow: 2px 2px 0 rgba(107, 76, 42, 0.12);
+}
+
+.meeting-location {
+  font-family: var(--font-display-bold);
+  font-size: clamp(1.4rem, 2.5vw, 1.8rem);
+  color: var(--burnt-orange);
+  text-shadow: 2px 2px 0 rgba(107, 76, 42, 0.1);
+}
+
+.meeting-note {
+  font-size: 0.9rem;
+  color: var(--bark-soft);
+  line-height: 1.75;
+}
+
+.meeting-card .meeting-icon {
+  width: 72px;
+  height: 72px;
+}
+
+.meeting-card .meeting-note {
+  max-width: 36rem;
+}
+
+/* Quick card */
+.quick-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100%;
+}
+
+.quick-card p {
+  color: var(--bark-soft);
+}
+
+.quick-card .btn {
+  margin-top: 1.25rem;
+}
+
+/* =============================================
+   FORMS — Handcrafted Poster Feel
+   ============================================= */
+.form {
+  display: grid;
+  gap: 1.75rem;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.field label {
+  min-height: 1.1rem;
+}
+
+/* Labels — small caps poster style */
+label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--bark);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Input fields — thick borders, poster paper background */
+input,
+select,
+textarea {
+  width: 100%;
+  padding: 0.95rem 1.1rem;
+  font-family: var(--font-body);
+  font-size: 1rem;
+  color: var(--bark);
+  background: var(--cream-light);
+  border: 3px solid var(--brown-outline-light);
+  box-shadow: inset 2px 2px 0 rgba(42, 31, 20, 0.04);
+  transition:
+    border-color var(--transition-fast),
+    box-shadow var(--transition-fast);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--bark-mid);
+  font-style: italic;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+  box-shadow:
+    inset 2px 2px 0 rgba(42, 31, 20, 0.04),
+    0 0 0 3px rgba(74, 122, 120, 0.15);
+}
+
+textarea {
+  min-height: 150px;
+  resize: vertical;
+  line-height: 1.7;
+}
+
+/* Select dropdown */
+select {
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%236b4c2a' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  padding-right: 3rem;
+}
+
+/* Floating Label */
+.floating-label {
+  position: relative;
+}
+
+.floating-label label {
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  font-size: 1rem;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: normal;
+  color: var(--bark-mid);
+  pointer-events: none;
+  transition: all var(--transition);
+  background: var(--cream-light);
+  padding: 0 0.35rem;
+}
+
+.floating-label input:focus ~ label,
+.floating-label input:not(:placeholder-shown) ~ label,
+.floating-label textarea:focus ~ label,
+.floating-label textarea:not(:placeholder-shown) ~ label,
+.floating-label select:focus ~ label,
+.floating-label select:valid ~ label {
+  top: -0.6rem;
+  left: 0.75rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--teal);
+}
+
+.floating-label input,
+.floating-label textarea,
+.floating-label select {
+  padding-top: 1.25rem;
+}
+
+/* Row layout */
+.row {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Fieldset — ornamental border */
+fieldset {
+  border: 3px solid var(--brown-outline-subtle);
+  padding: 1.5rem;
+  position: relative;
+}
+
+fieldset::after {
+  content: '';
+  position: absolute;
+  inset: 4px;
+  border: 1px solid rgba(184, 160, 122, 0.4);
+  pointer-events: none;
+}
+
+legend {
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: var(--bark);
+  padding: 0 0.6rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* Checkbox grid */
+.checkbox-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 0.75rem;
+  margin-top: 0.75rem;
+}
+
+.checkbox {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  background: var(--cream);
+  border: 2px solid var(--brown-outline-subtle);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0 rgba(107, 76, 42, 0.06);
+}
+
+.checkbox:hover {
+  background: var(--cream-light);
+  border-color: var(--brown-outline-light);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(107, 76, 42, 0.08);
+}
+
+.checkbox input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  margin: 0;
+  accent-color: var(--teal);
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.checkbox span {
+  font-size: 0.9rem;
+  color: var(--bark);
+  text-transform: none;
+  letter-spacing: normal;
+  font-weight: 400;
+}
+
+/* =============================================
+   STATUS MESSAGES
+   ============================================= */
+/* Respect [hidden] attribute — display:flex would override it */
+.status[hidden] {
+  display: none;
+}
+
+.status {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  padding: 1.1rem 1.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border: 3px solid;
+  box-shadow: 3px 3px 0 rgba(107, 76, 42, 0.08);
+}
+
+.status.ok {
+  background: rgba(90, 138, 94, 0.1);
+  border-color: var(--success);
+  color: #3d6a42;
+}
+
+.status.ok::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  background: var(--success);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3'%3E%3Cpath d='M20 6L9 17l-5-5'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+html.page-suggest .status.ok {
+  display: none;
+}
+
+.status.err {
+  background: rgba(184, 74, 50, 0.1);
+  border-color: var(--error);
+  color: var(--rust);
+}
+
+.status.err::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  background: var(--error);
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E") center/contain no-repeat;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2.5'%3E%3Ccircle cx='12' cy='12' r='10'/%3E%3Cline x1='12' y1='8' x2='12' y2='12'/%3E%3Cline x1='12' y1='16' x2='12.01' y2='16'/%3E%3C/svg%3E") center/contain no-repeat;
+}
+
+/* Form button spacing */
+.form .btn {
+  margin-top: 0.75rem;
+}
+
+/* Respect [hidden] */
+.form-success[hidden] {
+  display: none;
+}
+
+/* Form success state */
+.form-success {
+  text-align: center;
+  padding: 2.5rem 2rem;
+  background: rgba(90, 138, 94, 0.1);
+  border: 3px solid var(--success);
+  box-shadow: 4px 4px 0 rgba(90, 138, 94, 0.15);
+  animation: stampIn 0.5s var(--ease-spring);
+}
+
+@keyframes stampIn {
+  from {
+    opacity: 0;
+    transform: scale(1.15) rotate(-2deg);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+.form-success-icon {
+  width: 72px;
+  height: 72px;
+  margin: 0 auto 1.25rem;
+  background: var(--success);
+  color: var(--cream-light);
+  display: grid;
+  place-items: center;
+  font-size: 2rem;
+  font-weight: 700;
+  border: 4px solid var(--brown-outline);
+  box-shadow: 3px 3px 0 var(--brown-outline-subtle);
+}
+
+/* =============================================
+   TRIP LOADING STATES
+   ============================================= */
+.trips-loading,
+.trips-error,
+.trips-empty {
+  grid-column: 1 / -1;
+  padding: 1.25rem 1.5rem;
+  background: var(--cream);
+  border: 3px solid var(--brown-outline-subtle);
+  color: var(--bark-soft);
+  box-shadow: 3px 3px 0 rgba(107, 76, 42, 0.06);
+}
+
+.trips-error {
+  color: var(--rust);
+  border-color: var(--rust);
+}
+
+/* Skeleton loading — poster ink shimmer */
+.skeleton-card {
+  background: var(--cream-light);
+  border: 3px solid var(--brown-outline-subtle);
+  padding: 1.75rem;
+  display: grid;
+  gap: 0.85rem;
+  box-shadow: 4px 4px 0 rgba(107, 76, 42, 0.06);
+}
+
+.skeleton-line {
+  height: 14px;
+  background: linear-gradient(
+    90deg,
+    rgba(107, 76, 42, 0.06),
+    rgba(107, 76, 42, 0.14),
+    rgba(107, 76, 42, 0.06)
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.8s ease-in-out infinite;
+}
+
+.skeleton-line.short { width: 40%; }
+.skeleton-line.medium { width: 70%; }
+
+/* =============================================
+   SLIDE-OUT PANEL — Poster Side-Sheet
+   ============================================= */
+.slide-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(42, 31, 20, 0.65);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity var(--transition), visibility var(--transition);
+  z-index: var(--z-modal-backdrop);
+}
+
+.slide-panel-backdrop.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.slide-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  max-width: 460px;
+  background: var(--cream-light);
+  border-left: 4px solid var(--brown-outline);
+  transform: translateX(100%);
+  transition: transform var(--transition-slow);
+  z-index: var(--z-modal);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  /* Inner ornamental border on left edge */
+  box-shadow: inset 5px 0 0 var(--cream-light), inset 7px 0 0 var(--brown-outline-subtle);
+}
+
+.slide-panel.active {
+  transform: translateX(0);
+}
+
+.slide-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 1.75rem;
+  border-bottom: 3px solid var(--brown-outline-subtle);
+  background: var(--cream);
+}
+
+.slide-panel-header h3 {
+  font-size: 1.15rem;
+}
+
+.slide-panel-close {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: 3px solid var(--brown-outline-subtle);
+  cursor: pointer;
+  color: var(--bark-soft);
+  transition: all var(--transition-fast);
+  box-shadow: 2px 2px 0 rgba(107, 76, 42, 0.06);
+}
+
+.slide-panel-close:hover {
+  background: var(--cream-warm);
+  border-color: var(--brown-outline);
+  color: var(--bark);
+  transform: translate(-1px, -1px);
+  box-shadow: 3px 3px 0 rgba(107, 76, 42, 0.1);
+}
+
+.slide-panel-close svg {
+  width: 24px;
+  height: 24px;
+}
+
+.slide-panel-body {
+  flex: 1;
+  padding: 1.75rem;
+  overflow-y: auto;
+}
+
+.slide-panel-trip-info {
+  margin-bottom: 1.75rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid var(--brown-outline-subtle);
+}
+
+.slide-panel-trip-info h3 {
+  margin-bottom: 0.25rem;
+}
+
+.slide-panel-trip-info p {
+  margin: 0.25rem 0;
+  color: var(--bark-soft);
+}
+
+.slide-panel-footer {
+  padding: 1.5rem 1.75rem;
+  border-top: 3px solid var(--brown-outline-subtle);
+  background: var(--cream);
+}
+
+/* =============================================
+   PHOTO FRAMES — Vintage Print with Poster Borders
+   ============================================= */
+.photo-frame {
+  position: relative;
+  overflow: hidden;
+  background: var(--cream-light);
+  border: 5px solid var(--brown-outline);
+  box-shadow: 5px 5px 0 var(--brown-outline-subtle);
+  transition:
+    transform 350ms var(--ease-out),
+    box-shadow 350ms var(--ease-out);
+}
+
+/* Inner ornamental border */
+.photo-frame::before {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 1.5px solid rgba(107, 76, 42, 0.2);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.photo-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  /* Warm vintage tint — like a faded print */
+  filter: sepia(0.1) saturate(0.85) contrast(1.05);
+  transition: filter 500ms var(--ease-out), transform 500ms var(--ease-out);
+}
+
+.photo-frame:hover img {
+  filter: sepia(0) saturate(1.05) contrast(1);
+  transform: scale(1.04);
+}
+
+.photo-frame:hover {
+  transform: translate(-2px, -3px);
+  box-shadow: 7px 8px 0 var(--brown-outline-subtle);
+}
+
+/* Caption — small poster label */
+.photo-caption {
+  position: relative;
+  padding: 0.7rem 1rem 0.6rem;
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--bark-soft);
+  background: var(--cream-light);
+  z-index: 3;
+}
+
+/* =============================================
+   CALENDAR EMBED — Framed Poster Window
+   ============================================= */
+.iframe-wrap {
+  margin-top: 2rem;
+  overflow: hidden;
+  border: 4px solid var(--brown-outline);
+  background: var(--cream-light);
+  position: relative;
+  box-shadow: 5px 5px 0 var(--brown-outline-subtle);
+}
+
+/* Inner ornamental border */
+.iframe-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 5px;
+  border: 1.5px solid var(--brown-outline-subtle);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.iframe-wrap iframe {
+  width: 100%;
+  height: min(75vh, 700px);
+  border: 0;
+  display: block;
+  position: relative;
+  z-index: 1;
+}

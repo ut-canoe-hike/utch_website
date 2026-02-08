@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en" class="page-about">
+  <head>
+    {{> head
+      title="About | UT Canoe & Hiking Club"
+      description="Learn about the University of Tennessee Canoe & Hiking Club — Tennessee's oldest student-run outdoor adventure club since 1968."
+    }}
+    <script type="module" src="/js/core.js"></script>
+    <script type="module" src="/js/animations.js"></script>
+  </head>
+  <body>
+    {{> header }}
+
+    <main id="main">
+      {{> hero-compact
+        heroTitle="About UTCH"
+        heroDescription="The UT Canoe and Hiking Club is the oldest and largest outdoors club on campus, student run and led since 1968."
+      }}
+
+      <!-- Our Adventures -->
+      <section class="section section--alt">
+        <div class="wrap">
+          <div class="section-header">
+            <h2 class="animate-in">Our Adventures</h2>
+          </div>
+          <div class="photo-duo">
+            <figure class="photo-frame animate-in">
+              <img src="/assets/pictures/carvers_gap_selfie.jpg" alt="UTCH group selfie at the Carvers Gap summit with mountain views" loading="lazy" width="720" height="960">
+              <figcaption class="photo-caption">Carvers Gap Summit</figcaption>
+            </figure>
+            <figure class="photo-frame animate-in">
+              <img src="/assets/pictures/carvers_gap_taylor_vienna_nico.jpg" alt="Three UTCH members posing with backpacks on the trail at Carvers Gap" loading="lazy" width="720" height="960">
+              <figcaption class="photo-caption">On the Trail</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQs -->
+      <section class="section">
+        <div class="wrap">
+          <div class="section-header">
+            <h2 class="animate-in">FAQs</h2>
+          </div>
+
+          <div class="bento-grid">
+            <article class="card animate-in">
+              <h3>How do I become a member?</h3>
+              <p>UTCH recruits new members year-round; in order to go on trips you need to join "Canoe and Hiking Club" on Vollink, fill out the waiver, and pay dues ($50/year or $35/semester) in cash or to @UT-Canoe-Hiking on Venmo.</p>
+            </article>
+
+            <article class="card animate-in">
+              <h3>What is included after I pay the dues?</h3>
+              <p>Once you pay dues, you are allowed to sign up for trips and use our equipment. We have the necessary gear for all of our trips, including canoes, rafts, backpacks, tents, sleeping gear, and headlamps. All you need to bring is clothes and food!</p>
+            </article>
+
+            <article class="card animate-in">
+              <h3>Is this club beginner friendly?</h3>
+              <p>Yes! We welcome people of all skill levels; because we have all of the gear that you need, we offer the cheapest way to go on new adventures and spark your love for the outdoors.</p>
+            </article>
+
+            <article class="card animate-in">
+              <h3>What if I don't have a car?</h3>
+              <p>You need not worry, we carpool from campus for each adventure that we do.</p>
+            </article>
+
+            <article class="card animate-in">
+              <h3>Do I need to attend the weekly meetings to sign up for trips?</h3>
+              <p>If you need to borrow gear for a trip, you will receive and return it at the weekly meetings. Otherwise, you can reach out to an officer to be signed up for a trip. Members are encouraged to attend meetings as those who do will be favored for adventures with limited availability, and the weekly meetings are a great way to familiarize yourself with the people you're going to go outside with.</p>
+            </article>
+
+            <article class="card bento-wide animate-in">
+              <h3>Where does UTCH go?</h3>
+              <p>We do trips all over Tennessee and the United States. There are many local backpacking/hiking trips (Carvers Gap, Smokey Mountains, Grayson Highlands, Big South Fork), canoeing/rafting trips (Ocoee, Toccoa, Clear Creek, Tugaloo), along with two larger trips over spring and winter break (Cumberland Island, Big Bend, Gila, Superstitions).</p>
+              <div class="cta">
+                <a href="/trips.html" class="btn btn-secondary">View Trips</a>
+                <a href="/suggest.html" class="btn btn-outline">Suggest a Trip</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {{> footer }}
+  </body>
+</html>

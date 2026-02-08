@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en" class="page-officer">
+  <head>
+    {{> head
+      title="Officer Portal | UT Canoe & Hiking Club"
+      description="Officer tools for managing UTCH trips."
+    }}
+    <script type="module" src="/js/core.js"></script>
+    <script type="module" src="/js/animations.js"></script>
+    <script type="module" src="/js/officer.js"></script>
+  </head>
+  <body>
+    {{> header }}
+
+    <main id="main">
+      {{> hero-compact
+        heroTitle="Trip Management"
+        heroDescription="Log in to create, edit, delete, and sync trips."
+      }}
+
+      <!-- Login -->
+      <section class="section section--alt" data-officer-login>
+        <div class="wrap wrap--narrow">
+          <article class="card card--center card--ornate card--portal">
+            <span class="section-kicker">Officer Login</span>
+            <h2>Enter Passcode</h2>
+            <p>Access trip tools and calendar sync.</p>
+
+            <form class="form" data-officer-login-form>
+              <div class="sr-only" aria-hidden="true">
+                <label for="officerUsername">Username</label>
+                <input id="officerUsername" name="username" type="text" autocomplete="username" tabindex="-1" />
+              </div>
+
+              <div class="field">
+                <label for="officerSecret">Passcode</label>
+                <input id="officerSecret" name="officerSecret" type="text" required placeholder="Enter passcode" autocomplete="current-password" />
+              </div>
+
+              <button class="btn btn-primary" type="submit">Continue</button>
+              <div class="status" data-officer-login-status hidden></div>
+            </form>
+          </article>
+        </div>
+      </section>
+
+      <!-- Dashboard -->
+      <section class="section is-hidden" data-officer-dashboard>
+        <div class="wrap">
+          <div class="section-header">
+            <span class="section-kicker">Operations</span>
+            <h2>Trip Tools</h2>
+            <p>Create new trips, edit details, remove duplicates, and sync the calendar.</p>
+            <div class="cta">
+              <button class="btn btn-secondary" type="button" data-officer-sync-button>Sync Calendar</button>
+              <div class="status" data-officer-sync-status hidden></div>
+            </div>
+          </div>
+
+          <div class="bento-grid bento-grid--officer">
+            <!-- Create Trip -->
+            <article class="card card--ornate bento-large">
+              <h2>Create Trip</h2>
+              <form class="form" data-officer-create-form>
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="createTitle" name="title" required placeholder=" " />
+                    <label for="createTitle">Trip Title</label>
+                  </div>
+                  <div class="field">
+                    <label for="createActivity">Activity</label>
+                    <select id="createActivity" name="activity">
+                      <option value="">Select...</option>
+                      <option value="Hike">Hike</option>
+                      <option value="Backpacking">Backpacking</option>
+                      <option value="Canoe/Kayak">Canoe/Kayak</option>
+                      <option value="Camping">Camping</option>
+                      <option value="Climbing">Climbing</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="createStartDate">Start Date</label>
+                    <input id="createStartDate" name="startDate" type="date" required />
+                  </div>
+                  <div class="field">
+                    <label for="createStartTime">Start Time</label>
+                    <input id="createStartTime" name="startTime" type="time" />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="createEndDate">End Date</label>
+                    <input id="createEndDate" name="endDate" type="date" />
+                  </div>
+                  <div class="field">
+                    <label for="createEndTime">End Time</label>
+                    <input id="createEndTime" name="endTime" type="time" />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="createLocation" name="location" placeholder=" " />
+                    <label for="createLocation">Location</label>
+                  </div>
+                  <div class="field">
+                    <label for="createDifficulty">Difficulty</label>
+                    <select id="createDifficulty" name="difficulty">
+                      <option value="">Select...</option>
+                      <option value="Easy">Easy</option>
+                      <option value="Moderate">Moderate</option>
+                      <option value="Hard">Hard</option>
+                      <option value="Varies">Varies</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="createMeetTime" name="meetTime" placeholder=" " />
+                    <label for="createMeetTime">Meet Time</label>
+                  </div>
+                  <div class="floating-label">
+                    <input id="createMeetPlace" name="meetPlace" placeholder=" " />
+                    <label for="createMeetPlace">Meet Place</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="createLeaderName" name="leaderName" placeholder=" " />
+                    <label for="createLeaderName">Leader Name</label>
+                  </div>
+                  <div class="floating-label">
+                    <input id="createLeaderContact" name="leaderContact" placeholder=" " />
+                    <label for="createLeaderContact">Leader Contact</label>
+                  </div>
+                </div>
+
+                <div class="floating-label">
+                  <textarea id="createNotes" name="notes" placeholder=" " rows="3"></textarea>
+                  <label for="createNotes">Notes</label>
+                </div>
+
+                <fieldset class="field">
+                  <legend>Club Gear Available</legend>
+                  <div class="checkbox-grid">
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="tent" /><span>Tent</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="sleeping bag" /><span>Sleeping Bag</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="sleeping pad" /><span>Sleeping Pad</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="stove" /><span>Stove</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="headlamp" /><span>Headlamp</span></label>
+                  </div>
+                </fieldset>
+
+                <button class="btn btn-primary" type="submit">Create Trip</button>
+                <div class="status" data-officer-create-status hidden></div>
+              </form>
+            </article>
+
+            <!-- Edit Trip -->
+            <article class="card">
+              <h2>Edit Trip</h2>
+              <form class="form" data-officer-edit-form>
+                <div class="field">
+                  <label for="editTripId">Select Trip</label>
+                  <select id="editTripId" name="tripId" data-edit-trip-select required>
+                    <option value="" disabled selected>Loading trips...</option>
+                  </select>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="editTitle" name="title" required placeholder=" " />
+                    <label for="editTitle">Trip Title</label>
+                  </div>
+                  <div class="field">
+                    <label for="editActivity">Activity</label>
+                    <select id="editActivity" name="activity">
+                      <option value="">Select...</option>
+                      <option value="Hike">Hike</option>
+                      <option value="Backpacking">Backpacking</option>
+                      <option value="Canoe/Kayak">Canoe/Kayak</option>
+                      <option value="Camping">Camping</option>
+                      <option value="Climbing">Climbing</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="editStartDate">Start Date</label>
+                    <input id="editStartDate" name="startDate" type="date" required />
+                  </div>
+                  <div class="field">
+                    <label for="editStartTime">Start Time</label>
+                    <input id="editStartTime" name="startTime" type="time" />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="field">
+                    <label for="editEndDate">End Date</label>
+                    <input id="editEndDate" name="endDate" type="date" />
+                  </div>
+                  <div class="field">
+                    <label for="editEndTime">End Time</label>
+                    <input id="editEndTime" name="endTime" type="time" />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="editLocation" name="location" placeholder=" " />
+                    <label for="editLocation">Location</label>
+                  </div>
+                  <div class="field">
+                    <label for="editDifficulty">Difficulty</label>
+                    <select id="editDifficulty" name="difficulty">
+                      <option value="">Select...</option>
+                      <option value="Easy">Easy</option>
+                      <option value="Moderate">Moderate</option>
+                      <option value="Hard">Hard</option>
+                      <option value="Varies">Varies</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="editMeetTime" name="meetTime" placeholder=" " />
+                    <label for="editMeetTime">Meet Time</label>
+                  </div>
+                  <div class="floating-label">
+                    <input id="editMeetPlace" name="meetPlace" placeholder=" " />
+                    <label for="editMeetPlace">Meet Place</label>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="floating-label">
+                    <input id="editLeaderName" name="leaderName" placeholder=" " />
+                    <label for="editLeaderName">Leader Name</label>
+                  </div>
+                  <div class="floating-label">
+                    <input id="editLeaderContact" name="leaderContact" placeholder=" " />
+                    <label for="editLeaderContact">Leader Contact</label>
+                  </div>
+                </div>
+
+                <div class="floating-label">
+                  <textarea id="editNotes" name="notes" placeholder=" " rows="3"></textarea>
+                  <label for="editNotes">Notes</label>
+                </div>
+
+                <fieldset class="field">
+                  <legend>Club Gear Available</legend>
+                  <div class="checkbox-grid">
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="tent" /><span>Tent</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="sleeping bag" /><span>Sleeping Bag</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="sleeping pad" /><span>Sleeping Pad</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="stove" /><span>Stove</span></label>
+                    <label class="checkbox"><input type="checkbox" name="gearAvailable" value="headlamp" /><span>Headlamp</span></label>
+                  </div>
+                </fieldset>
+
+                <button class="btn btn-primary" type="submit">Save Changes</button>
+                <div class="status" data-officer-edit-status hidden></div>
+              </form>
+            </article>
+
+            <!-- Delete Trip -->
+            <article class="card">
+              <h2>Delete Trip</h2>
+              <form class="form" data-officer-delete-form>
+                <div class="field">
+                  <label for="deleteTripId">Select Trip</label>
+                  <select id="deleteTripId" name="tripId" data-delete-trip-select required>
+                    <option value="" disabled selected>Loading trips...</option>
+                  </select>
+                </div>
+                <button class="btn btn-outline" type="submit">Delete Trip</button>
+                <div class="status" data-officer-delete-status hidden></div>
+              </form>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {{> footer }}
+  </body>
+</html>

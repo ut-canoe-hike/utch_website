@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en" class="page-home">
+  <head>
+    {{> head
+      title="UT Canoe & Hiking Club"
+      description="University of Tennessee Canoe & Hiking Club — Tennessee's oldest student-run outdoor adventure club."
+    }}
+    <script type="module" src="/js/core.js"></script>
+    <script type="module" src="/js/animations.js"></script>
+    <script type="module" src="/js/trips.js"></script>
+  </head>
+  <body>
+    {{> header }}
+
+    <main id="main">
+      {{> hero-full }}
+
+      <!-- Get Involved -->
+      <section class="section section--alt">
+        <div class="wrap">
+          <div class="section-header">
+            <h2 class="animate-in">Get Involved</h2>
+          </div>
+          <div class="bento-grid bento-grid--home">
+            <article class="card card--ornate meeting-card bento-large animate-in">
+              <div class="meeting-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M7 2v3M17 2v3M4 7h16M6 10h4M6 14h4M14 10h4M14 14h4M5 4h14a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="meeting-text">
+                <span class="meeting-label">UTCH Meeting</span>
+                <strong class="meeting-time">Every Week &bull; 7:00 PM</strong>
+                <span class="meeting-location">AMB 27</span>
+              </div>
+              <p class="meeting-note">We meet every week at 7pm in AMB27! This is where trips will be discussed, gear will be given/received, and general loitering and hanging out will take place. Meeting attendance is considered when selecting spots for limited-capacity trips.</p>
+            </article>
+
+            <article class="card card--ornate quick-card animate-in">
+              <h3>Upcoming Trips</h3>
+              <p>Browse the calendar and RSVP.</p>
+              <a href="/trips.html" class="btn btn-secondary btn-sm">View Trips</a>
+            </article>
+
+            <article class="card card--ornate quick-card animate-in">
+              <h3>Suggest a Trip</h3>
+              <p>Share your idea and volunteer to lead.</p>
+              <a href="/suggest.html" class="btn btn-primary btn-sm">Suggest a Trip</a>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- Life on the Trail -->
+      <section class="section">
+        <div class="wrap">
+          <div class="section-header">
+            <h2 class="animate-in">Life on the Trail</h2>
+          </div>
+          <div class="photo-showcase">
+            <figure class="photo-frame animate-in">
+              <img src="/assets/pictures/carvers_gap_bigview.jpg" alt="UTCH members taking in the panoramic mountain view at Carvers Gap" loading="lazy" width="960" height="720">
+              <figcaption class="photo-caption">Carvers Gap</figcaption>
+            </figure>
+            <figure class="photo-frame animate-in">
+              <img src="/assets/pictures/gila_river_crossing.jpeg" alt="Club members crossing the Gila River on a backpacking trip" loading="lazy" width="960" height="640">
+              <figcaption class="photo-caption">Gila River</figcaption>
+            </figure>
+            <figure class="photo-frame animate-in">
+              <img src="/assets/pictures/gila_hot_spring.jpeg" alt="UTCH members relaxing in natural hot springs at Gila" loading="lazy" width="960" height="640">
+              <figcaption class="photo-caption">Gila Hot Springs</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- Upcoming Adventures -->
+      <section class="section section--alt">
+        <div class="wrap">
+          <div class="section-header">
+            <h2 class="animate-in">Upcoming Adventures</h2>
+          </div>
+          <div class="grid three-col" data-trip-preview></div>
+          <div class="cta">
+            <a href="/trips.html" class="btn btn-primary">View All Trips</a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    {{> footer }}
+  </body>
+</html>

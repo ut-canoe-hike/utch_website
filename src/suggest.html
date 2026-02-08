@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en" class="page-suggest">
+  <head>
+    {{> head
+      title="Suggest a Trip | UT Canoe & Hiking Club"
+      description="Suggest a new trip for the UT Canoe & Hiking Club."
+    }}
+    <script type="module" src="/js/core.js"></script>
+    <script type="module" src="/js/animations.js"></script>
+  </head>
+  <body>
+    {{> header }}
+
+    <main id="main">
+      {{> hero-compact
+        heroTitle="Suggest a Trip"
+        heroDescription="Have an adventure in mind? Share your idea and we'll help make it happen."
+      }}
+
+      <section class="section section--alt">
+        <div class="wrap wrap--narrow">
+          <div class="section-header">
+            <h2 class="animate-in">Add to the Adventure Calendar</h2>
+            <p class="animate-in">We'll take other suggestions too.</p>
+          </div>
+
+          <article class="card card--ornate">
+            <form class="form" data-suggest-form>
+              <div class="row">
+                <div class="floating-label">
+                  <input id="name" name="name" required placeholder=" " autocomplete="name" />
+                  <label for="name">Your Name</label>
+                </div>
+
+                <div class="floating-label">
+                  <input id="email" name="email" type="email" placeholder=" " autocomplete="email" />
+                  <label for="email">Email (optional)</label>
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="willingToLead">Would you like to lead this trip?</label>
+                <select id="willingToLead" name="willingToLead" required>
+                  <option value="yes">Yes, I can lead or co-lead</option>
+                  <option value="maybe">Maybe, ask me about it</option>
+                  <option value="no">No, just sharing an idea</option>
+                </select>
+              </div>
+
+              <div class="floating-label">
+                <textarea id="idea" name="idea" required placeholder=" " rows="3"></textarea>
+                <label for="idea">Trip Idea (e.g., "Hike at Frozen Head")</label>
+              </div>
+
+              <div class="row">
+                <div class="floating-label">
+                  <input id="location" name="location" placeholder=" " />
+                  <label for="location">Location (optional)</label>
+                </div>
+
+                <div class="floating-label">
+                  <input id="timing" name="timing" placeholder=" " />
+                  <label for="timing">Preferred Timing (optional)</label>
+                </div>
+              </div>
+
+              <div class="floating-label">
+                <textarea id="notes" name="notes" placeholder=" " rows="4"></textarea>
+                <label for="notes">Additional Notes (optional)</label>
+              </div>
+
+              <input name="website" tabindex="-1" autocomplete="off" class="sr-only" />
+
+              <button class="btn btn-primary btn-lg" type="submit">Send Suggestion</button>
+              <div class="status" data-form-status hidden></div>
+            </form>
+
+            <div class="form-success" data-form-success hidden>
+              <div class="form-success-icon" aria-hidden="true">&check;</div>
+              <h3>Trip Submitted Successfully</h3>
+              <p>Thanks for sharing. We'll review your idea and reach out to you soon.</p>
+            </div>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    {{> footer }}
+  </body>
+</html>
