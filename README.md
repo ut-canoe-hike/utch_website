@@ -1,91 +1,50 @@
 # UT Canoe & Hiking Club Website
 
-A simple website for the University of Tennessee Canoe & Hiking Club.
+UTCH site frontend (Vite) + Cloudflare Worker backend.
 
-## Architecture
+## Project Structure
 
-- **Frontend**: Static HTML/CSS/JS hosted on GitHub Pages
-- **Backend**: Cloudflare Worker API (in `/worker`)
-- **Data**: Google Sheets (RSVPs, Trips, Suggestions) + Google Calendar
+- `src/`: frontend source (pages, partials, JS, CSS, assets)
+- `worker/`: Cloudflare Worker API and integrations
+- `.github/workflows/deploy-pages.yml`: GitHub Pages deploy workflow
 
-## Features
+## Frontend Development
 
-- Public trip calendar (embedded Google Calendar)
-- RSVP form for upcoming trips
-- Trip suggestion form
-- Officer portal for creating/editing/deleting trips
+Install and run:
 
-## Quick Links
+```bash
+npm ci
+npm run dev
+```
 
-- Public site: `https://ut-canoe-hike.github.io/utch_website/`
-- Officer portal: `https://ut-canoe-hike.github.io/utch_website/officer.html`
+Create a production build:
 
-## Setup
+```bash
+npm run build
+```
 
-### 1. GitHub Pages
+Vite outputs compiled files to `dist/`.
 
-1. Go to repo **Settings** → **Pages**
-2. Source: Deploy from branch `main`, folder `/ (root)`
-3. Save and wait for deployment
+## Frontend Config
 
-### 2. Backend API
-
-See [`worker/README.md`](worker/README.md) for full setup instructions.
-
-Summary:
-1. Create a Google Cloud service account with Sheets + Calendar API access
-2. Share your Google Sheet and Calendar with the service account email
-3. Deploy the Cloudflare Worker with `npm run deploy`
-4. Add secrets (service account credentials, sheet ID, calendar ID, officer passcode)
-
-### 3. Frontend Config
-
-Edit `assets/config.js`:
+Edit `src/public/assets/config.js`:
 
 ```javascript
 window.UTCH_CONFIG = {
   calendarEmbedUrl: "https://calendar.google.com/calendar/embed?src=...",
-  calendarIcsUrl: "",  // optional
+  calendarIcsUrl: "",
   apiBaseUrl: "https://your-worker.workers.dev"
 };
 ```
 
-## Officer Workflow
+## GitHub Pages Deployment
 
-### Create a Trip
+Deployment is handled by GitHub Actions.
 
-1. Go to `officer.html`
-2. Enter the officer passcode
-3. Fill out trip details
-4. Submit — creates a calendar event and adds to the Trips sheet
+1. In GitHub repo settings, go to `Settings` -> `Pages`.
+2. Set `Build and deployment` source to `GitHub Actions`.
+3. Push to `main` to trigger deploy.
 
-### Check RSVPs
+## Backend
 
-Open the Google Sheet → `RSVPs` tab
-
-### Review Suggestions
-
-Open the Google Sheet → `Suggestions` tab
-
-## Common Edits
-
-| Task | File(s) |
-|------|---------|
-| Change meeting time/room | `index.html`, `about.html` |
-| Update contact email | Search for `utch1968@gmail.com` |
-| Change calendar embed | `assets/config.js` |
-| Change API URL | `assets/config.js` |
-| Modify backend logic | `worker/src/` |
-
-## Troubleshooting
-
-**"Unable to load trips"**
-- Check `assets/config.js` has correct `apiBaseUrl`
-- Verify the Worker is deployed and secrets are set
-- Check browser console for errors
-
-**"Not authorized" on officer page**
-- Wrong passcode (must match `OFFICER_PASSCODE` secret in Worker)
-
-**CORS errors**
-- Check `ALLOWED_ORIGIN` secret matches your GitHub Pages URL exactly (including `https://`, no trailing slash)
+See `worker/README.md` for Worker setup and secrets.

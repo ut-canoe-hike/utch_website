@@ -67,7 +67,7 @@ This outputs your Worker URL (e.g., `https://utch-api.your-subdomain.workers.dev
 
 ### 5. Update frontend config
 
-Edit `assets/config.js` and set `apiBaseUrl` to your Worker URL.
+Edit `src/public/assets/config.js` and set `apiBaseUrl` to your Worker URL.
 
 ## Development
 
