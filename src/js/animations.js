@@ -354,14 +354,17 @@ export function initCardHoverEffects() {
     const rotations = [-1.2, 0.8, -0.5, 1.1, -0.9, 0.4, -0.7, 1.3];
     const rotation = rotations[index % rotations.length];
 
-    gsap.set(card, { rotation, transformOrigin: 'center center' });
+    gsap.set(card, {
+      rotation,
+      transformOrigin: 'center center',
+      clearProps: 'boxShadow'
+    });
 
     card.addEventListener('mouseenter', () => {
       gsap.to(card, {
         rotation: 0,
         scale: 1.02,
         y: -8,
-        boxShadow: '0 16px 32px rgba(61, 47, 36, 0.14)',
         duration: 0.4,
         ease: 'power2.out'
       });
@@ -372,7 +375,6 @@ export function initCardHoverEffects() {
         rotation,
         scale: 1,
         y: 0,
-        boxShadow: '0 4px 12px rgba(61, 47, 36, 0.08)',
         duration: 0.5,
         ease: 'power2.out'
       });
