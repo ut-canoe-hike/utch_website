@@ -47,6 +47,10 @@ const TRIPS_HEADERS = [
 const SYNC_PAST_DAYS = 30;
 const SYNC_FUTURE_DAYS = 365;
 
+function getRsvpUrl(siteBaseUrl: string, tripId: string): string {
+  return `${siteBaseUrl}/trips.html?tripId=${encodeURIComponent(tripId)}`;
+}
+
 // Public: list upcoming trips
 export async function listTrips(env: Env): Promise<Response> {
   try {
@@ -167,7 +171,7 @@ export async function createTrip(env: Env, body: TripInput, siteBaseUrl: string)
     }
 
     const tripId = generateTripId(start, title);
-    const rsvpUrl = `${siteBaseUrl}/rsvp.html?tripId=${encodeURIComponent(tripId)}`;
+    const rsvpUrl = getRsvpUrl(siteBaseUrl, tripId);
 
     const description = buildEventDescription({
       tripId,
@@ -284,7 +288,7 @@ export async function updateTrip(
       if (end <= start) throw new Error('end must be after start');
     }
 
-    const rsvpUrl = `${siteBaseUrl}/rsvp.html?tripId=${encodeURIComponent(tripId)}`;
+    const rsvpUrl = getRsvpUrl(siteBaseUrl, tripId);
 
     const description = buildEventDescription({
       tripId,
@@ -459,7 +463,7 @@ export async function syncTripsWithCalendar(env: Env, siteBaseUrl: string): Prom
       ? addDaysToDateString(endParts.date, -1)
       : endParts.date;
 
-    const rsvpUrl = `${siteBaseUrl}/rsvp.html?tripId=${encodeURIComponent(tripId)}`;
+    const rsvpUrl = getRsvpUrl(siteBaseUrl, tripId);
     const description = buildEventDescription({
       tripId,
       activity: row.activity,

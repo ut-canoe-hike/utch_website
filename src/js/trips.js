@@ -171,6 +171,7 @@ function initTripsPage() {
 
   const timeZone = getDisplayTimeZone();
   const tripMap = new Map();
+  const requestedTripId = new URLSearchParams(window.location.search).get('tripId');
 
   async function loadTrips() {
     renderSkeleton(container, 6);
@@ -187,6 +188,10 @@ function initTripsPage() {
         emptyMessage: 'No upcoming trips. Check back soon or suggest one!',
         onRsvp: (tripId) => openRsvpPanel(tripMap.get(tripId))
       });
+
+      if (requestedTripId && tripMap.has(requestedTripId)) {
+        openRsvpPanel(tripMap.get(requestedTripId));
+      }
     } catch {
       container.innerHTML = '<p class="trips-error">Unable to load trips.</p>';
     }
@@ -375,8 +380,8 @@ function initSuggestForm() {
 
 document.addEventListener('DOMContentLoaded', () => {
   initTripPreview();
-  initTripsPage();
   initRsvpPanel();
+  initTripsPage();
   initCalendarEmbed();
   initSuggestForm();
 });

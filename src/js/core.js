@@ -65,7 +65,7 @@ export function formatTimeLabel(date, timeZone) {
 export async function api(method, path, body = null) {
   const baseUrl = getApiBaseUrl();
   if (!baseUrl) {
-    throw new Error('Missing API URL. Set UTCH_CONFIG.apiBaseUrl in assets/config.js.');
+    throw new Error('Missing API URL. Set UTCH_CONFIG.apiBaseUrl in src/public/assets/config.js.');
   }
 
   const options = {
@@ -77,11 +77,25 @@ export async function api(method, path, body = null) {
   }
 
   const response = await fetch(`${baseUrl}${path}`, options);
-  const data = await response.json();
+  const text = await response.text();
+  let data = null;
 
-  if (!data.ok) {
-    throw new Error(data.error || `Request failed (${response.status})`);
+  if (text) {
+    try {
+      data = JSON.parse(text);
+    } catch {
+      throw new Error(`Unexpected API response (${response.status}).`);
+    }
   }
+
+  if (!response.ok) {
+    throw new Error(data?.error || `Request failed (${response.status})`);
+  }
+
+  if (!data?.ok) {
+    throw new Error(data?.error || 'Malformed API response.');
+  }
+
   return data.data;
 }
 

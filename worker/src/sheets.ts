@@ -4,6 +4,18 @@ export interface SheetRow {
   [key: string]: string;
 }
 
+function columnNumberToLetters(col: number): string {
+  if (col < 1) throw new Error(`Invalid column index: ${col}`);
+  let n = col;
+  let letters = '';
+  while (n > 0) {
+    const rem = (n - 1) % 26;
+    letters = String.fromCharCode(65 + rem) + letters;
+    n = Math.floor((n - 1) / 26);
+  }
+  return letters;
+}
+
 // Get all rows from a sheet as objects (header row defines keys)
 export async function getRows(
   token: string,
@@ -86,7 +98,7 @@ export async function updateCell(
   col: number,
   value: string
 ): Promise<void> {
-  const colLetter = String.fromCharCode(64 + col); // 1=A, 2=B, etc.
+  const colLetter = columnNumberToLetters(col);
   const range = encodeURIComponent(`${sheetName}!${colLetter}${row}`);
   const url = `${SHEETS_API}/${sheetId}/values/${range}?valueInputOption=RAW`;
 
