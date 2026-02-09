@@ -69,6 +69,34 @@ function renderSkeleton(container, count = 3) {
   container.innerHTML = Array.from({ length: count }, () => card).join('');
 }
 
+function renderTripsState(container, {
+  kind = 'empty',
+  message,
+  onRetry = null,
+  suggestHref = '/suggest.html'
+}) {
+  if (!container) return;
+
+  const stateClass = kind === 'error' ? 'trips-error' : 'trips-empty';
+  const retryBtn = kind === 'error'
+    ? '<button class="btn btn-secondary" type="button" data-trips-retry>Retry</button>'
+    : '';
+
+  container.innerHTML = `
+    <div class="${stateClass} trips-state">
+      <p>${escapeHTML(message)}</p>
+      <div class="trips-state-actions">
+        ${retryBtn}
+        <a href="${suggestHref}" class="btn btn-outline">Suggest a Trip</a>
+      </div>
+    </div>
+  `;
+
+  if (kind === 'error' && typeof onRetry === 'function') {
+    container.querySelector('[data-trips-retry]')?.addEventListener('click', onRetry);
+  }
+}
+
 // ============================================
 // Trip Card HTML Generator
 // ============================================
@@ -113,7 +141,7 @@ function renderTrips(container, trips, timeZone, options = {}) {
   } = options;
 
   if (!trips.length) {
-    container.innerHTML = `<p class="trips-empty">${emptyMessage}</p>`;
+    renderTripsState(container, { kind: 'empty', message: emptyMessage });
     return;
   }
 
@@ -158,7 +186,11 @@ function initTripPreview() {
         stagger: true
       });
     } catch {
-      container.innerHTML = '<p class="trips-error">Unable to load trips.</p>';
+      renderTripsState(container, {
+        kind: 'error',
+        message: 'Unable to load trips right now.',
+        onRetry: loadPreview
+      });
     }
   }
 
@@ -197,7 +229,11 @@ function initTripsPage() {
         openRsvpPanel(tripMap.get(requestedTripId));
       }
     } catch {
-      container.innerHTML = '<p class="trips-error">Unable to load trips.</p>';
+      renderTripsState(container, {
+        kind: 'error',
+        message: 'Unable to load trips right now.',
+        onRetry: loadTrips
+      });
     }
   }
 

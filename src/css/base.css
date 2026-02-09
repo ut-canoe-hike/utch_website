@@ -184,8 +184,7 @@ h1, h2 {
   color: var(--bark);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  /* Letterpress shadow — thicker, more visible */
-  text-shadow: 3px 3px 0 rgba(107, 76, 42, 0.18);
+  text-shadow: 2px 2px 0 rgba(107, 76, 42, 0.12);
 }
 
 h3, h4, h5, h6 {
@@ -241,6 +240,31 @@ a {
 
 a:hover {
   color: var(--burnt-orange);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible {
+  outline: 3px solid var(--mustard);
+  outline-offset: 3px;
+}
+
+@media (max-width: 767px) {
+  h1,
+  h2 {
+    letter-spacing: 0.02em;
+    line-height: 1.08;
+  }
+
+  h3,
+  h4,
+  h5,
+  h6 {
+    letter-spacing: 0.04em;
+  }
 }
 
 strong, b { font-weight: 700; }

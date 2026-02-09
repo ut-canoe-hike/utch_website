@@ -154,6 +154,7 @@
 
 .card p {
   line-height: 1.75;
+  max-width: 66ch;
 }
 
 /* Ornate card — thicker inner border */
@@ -177,6 +178,12 @@
 .card--portal {
   border-color: var(--brown-outline-dark);
   box-shadow: 5px 5px 0 rgba(42, 31, 20, 0.2);
+}
+
+.card:focus-within,
+.trip-card:focus-within {
+  outline: 2px dashed var(--mustard-dark);
+  outline-offset: 4px;
 }
 
 /* Card meta divider */
@@ -260,6 +267,9 @@
 .trip-card-icon svg {
   width: 24px;
   height: 24px;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .trip-card-title {
@@ -385,6 +395,9 @@
   height: 28px;
   fill: none;
   stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .meeting-text {
@@ -760,6 +773,38 @@ html.page-suggest .status.ok {
 .trips-error {
   color: var(--rust);
   border-color: var(--rust);
+}
+
+.trips-state {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.trips-state p {
+  margin: 0;
+}
+
+.trips-state-actions {
+  display: flex;
+  gap: 0.65rem;
+  flex-wrap: wrap;
+}
+
+.trips-state-actions .btn {
+  padding: 0.55rem 1rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.12em;
+}
+
+.section-icon svg,
+.slide-panel-close svg,
+.section-icon svg *,
+.slide-panel-close svg *,
+.trip-card-icon svg *,
+.meeting-icon svg * {
+  stroke-width: 1.9;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 /* Skeleton loading — poster ink shimmer */

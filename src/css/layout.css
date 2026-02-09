@@ -523,6 +523,7 @@ body.is-loaded main {
 
 .section-header h2 {
   margin-bottom: 0.85rem;
+  text-shadow: 1px 1px 0 rgba(107, 76, 42, 0.1);
 }
 
 .section-header p {
@@ -762,7 +763,7 @@ body.is-loaded main {
 
 .footer-content {
   position: relative;
-  background: #2d4048;
+  background: #3c2e23;
   padding: calc(2.5rem + var(--footer-seam)) 0 2.5rem;
   border-top: 3px solid var(--brown-outline);
   margin-top: calc(-1 * var(--footer-seam));
@@ -776,7 +777,7 @@ body.is-loaded main {
   left: clamp(2rem, 8vw, 8rem);
   right: clamp(2rem, 8vw, 8rem);
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(253, 251, 247, 0.2), transparent);
+  background: linear-gradient(90deg, transparent, rgba(253, 251, 247, 0.12), transparent);
 }
 
 .footer-inner {
@@ -794,8 +795,8 @@ body.is-loaded main {
 }
 
 .footer-brand img {
-  width: 48px;
-  height: 48px;
+  width: 44px;
+  height: 44px;
   border: 3px solid rgba(253, 251, 247, 0.25);
   background: rgba(253, 251, 247, 0.1);
   box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.2);
@@ -803,28 +804,28 @@ body.is-loaded main {
 
 .footer-brand span {
   font-family: var(--font-display-bold);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   color: var(--cream);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.03em;
+  text-shadow: none;
 }
 
 .footer-info {
-  color: rgba(253, 251, 247, 0.55);
+  color: rgba(253, 251, 247, 0.62);
   font-size: 0.85rem;
 }
 
 .footer-info a {
-  color: var(--mustard-light);
+  color: #f3c479;
   font-weight: 700;
   border-bottom: 1px solid transparent;
   transition: border-color var(--transition-fast), color var(--transition-fast);
 }
 
 .footer-info a:hover {
-  color: var(--peach);
-  border-bottom-color: var(--peach);
+  color: #ffd7a3;
+  border-bottom-color: #ffd7a3;
 }
 
 /* =============================================
@@ -1218,16 +1219,16 @@ body.is-loaded main {
   }
 
   .section {
-    padding: 2.25rem 0;
+    padding: 1.95rem 0;
   }
 
   .section:last-child {
-    padding-bottom: 2.75rem;
+    padding-bottom: 2.3rem;
   }
 
   .section-header {
-    margin-bottom: 1.75rem;
-    padding-bottom: 1.25rem;
+    margin-bottom: 1.4rem;
+    padding-bottom: 1rem;
   }
 
   .section-header::after {
@@ -1305,8 +1306,8 @@ body.is-loaded main {
   }
 
   .grid {
-    gap: 1.5rem;
-    margin-top: 1.75rem;
+    gap: 1.2rem;
+    margin-top: 1.35rem;
   }
 
   .trip-card {
@@ -1349,7 +1350,7 @@ body.is-loaded main {
   }
 
   .form {
-    gap: 1.5rem;
+    gap: 1.15rem;
   }
 
   .form .btn {
