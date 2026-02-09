@@ -6,11 +6,11 @@
 /* ---------- Design Tokens ---------- */
 :root {
   /* Color Palette — warm saturated earth tones from the poster */
-  --cream: #f2e6cd;
-  --cream-light: #f7f0de;
-  --cream-warm: #ecdbb8;
-  --cream-dark: #e0cfa5;
-  --paper: #f5ead4;
+  --cream: #e8d6ba;
+  --cream-light: #f0e1c8;
+  --cream-warm: #dcc39d;
+  --cream-dark: #c8ac83;
+  --paper: #e7d3b3;
 
   /* Browns */
   --bark: #2a1f14;
