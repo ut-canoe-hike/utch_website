@@ -9,6 +9,7 @@ export default {
     rollupOptions: {
       input: {
         main: resolve(__dirname, 'src/index.html'),
+        join: resolve(__dirname, 'src/join.html'),
         trips: resolve(__dirname, 'src/trips.html'),
         about: resolve(__dirname, 'src/about.html'),
         suggest: resolve(__dirname, 'src/suggest.html'),
