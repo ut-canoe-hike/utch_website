@@ -64,7 +64,10 @@
   height: auto;
   border: 4px solid var(--brown-outline);
   box-shadow: 4px 4px 0 var(--brown-outline-subtle);
-  background: var(--cream-light);
+  background: #ffffff;
+  filter: none !important;
+  mix-blend-mode: normal;
+  image-rendering: crisp-edges;
 }
 
 @media (min-width: 960px) {
