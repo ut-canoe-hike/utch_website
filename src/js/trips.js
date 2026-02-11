@@ -84,6 +84,22 @@ function getErrorMessage(err, fallback) {
   return err instanceof Error && err.message ? err.message : fallback;
 }
 
+function isNotFoundError(err) {
+  return err instanceof Error && /not found/i.test(err.message);
+}
+
+async function submitTripRequest(payload) {
+  try {
+    return await api('POST', '/api/requests', payload);
+  } catch (err) {
+    // Compatibility fallback for older deployed Workers that still expose /api/rsvp only.
+    if (isNotFoundError(err)) {
+      return api('POST', '/api/rsvp', payload);
+    }
+    throw err;
+  }
+}
+
 // ============================================
 // Skeleton Loading
 // ============================================
@@ -350,7 +366,7 @@ function initSignupPanel() {
     }
 
     try {
-      await api('POST', '/api/requests', {
+      await submitTripRequest({
         tripId: tripIdInput.value,
         name: form.name.value.trim(),
         contact: form.contact.value.trim(),

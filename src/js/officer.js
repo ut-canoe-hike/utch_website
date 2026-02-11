@@ -17,6 +17,10 @@ function getErrorMessage(err, fallback) {
   return err instanceof Error && err.message ? err.message : fallback;
 }
 
+function isNotFoundError(err) {
+  return err instanceof Error && /not found/i.test(err.message);
+}
+
 function normalizeSignupStatus(value) {
   const status = String(value || '').trim().toUpperCase();
   if (status === 'MEETING_ONLY') return 'MEETING_ONLY';
@@ -281,7 +285,15 @@ function initOfficerPortal() {
       renderRequestList(approvedList, approved, 'approved');
       setStatus(requestsStatus, 'ok', `Loaded ${pending.length} pending and ${approved.length} approved.`);
     } catch (err) {
-      setStatus(requestsStatus, 'err', getErrorMessage(err, 'Unable to load trip requests.'));
+      if (isNotFoundError(err)) {
+        setStatus(
+          requestsStatus,
+          'err',
+          'Request routes are not deployed yet. Deploy the Cloudflare Worker and retry.'
+        );
+      } else {
+        setStatus(requestsStatus, 'err', getErrorMessage(err, 'Unable to load trip requests.'));
+      }
       if (pendingList) pendingList.innerHTML = '<li class="requests-empty">Unable to load pending requests.</li>';
       if (approvedList) approvedList.innerHTML = '<li class="requests-empty">Unable to load roster.</li>';
     }
@@ -362,7 +374,15 @@ function initOfficerPortal() {
       await loadTripRequests(activeRequestsTripId);
       setStatus(requestsStatus, 'ok', 'Request updated.');
     } catch (err) {
-      setStatus(requestsStatus, 'err', getErrorMessage(err, 'Unable to update request.'));
+      if (isNotFoundError(err)) {
+        setStatus(
+          requestsStatus,
+          'err',
+          'Request routes are not deployed yet. Deploy the Cloudflare Worker and retry.'
+        );
+      } else {
+        setStatus(requestsStatus, 'err', getErrorMessage(err, 'Unable to update request.'));
+      }
       button.disabled = false;
     }
   });
