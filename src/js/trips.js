@@ -10,8 +10,7 @@ import {
   formatTimeLabel,
   escapeHTML,
   setStatus,
-  getSiteSetting,
-  loadSiteSettings
+  getSiteSetting
 } from './core.js';
 import { initScrollAnimations, initCardHoverEffects } from './animations.js';
 
@@ -335,10 +334,6 @@ function initSignupPanel() {
   const tripIdInput = form.querySelector('[data-signup-trip-id]');
   const gearField = form.querySelector('[data-gear-field]');
   const gearOptions = form.querySelector('[data-gear-options]');
-
-  loadSiteSettings().catch(() => {
-    // Keep static copy when settings are unavailable.
-  });
 
   function setPanelMessage(text) {
     messageEl.hidden = false;

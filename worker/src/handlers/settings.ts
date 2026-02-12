@@ -31,8 +31,7 @@ interface ParsedSiteSettings {
   warnings: string[];
 }
 
-const SITE_SETTING_KEYS = Object.keys(DEFAULT_SITE_SETTINGS) as SiteSettingKey[];
-const SITE_SETTING_KEY_SET = new Set<string>(SITE_SETTING_KEYS);
+const SITE_SETTING_KEY_SET = new Set<string>(Object.keys(DEFAULT_SITE_SETTINGS));
 
 function isMissingSheetError(err: unknown): boolean {
   const message = err instanceof Error ? err.message : String(err);
@@ -47,7 +46,7 @@ function normalizeHttpsUrl(raw: unknown, key: SiteSettingKey): string {
   } catch {
     throw new Error(`${key} must be a valid URL`);
   }
-  if (!['https:'].includes(parsed.protocol)) {
+  if (parsed.protocol !== 'https:') {
     throw new Error(`${key} must use https://`);
   }
   return parsed.toString();
@@ -186,12 +185,15 @@ export async function updateSiteSettings(
       }
     });
 
-    const valueColIndex = await getColumnIndex(token, env.SHEET_ID, SITE_SETTINGS_SHEET, 'value');
-    const updatedAtColIndex = await getColumnIndex(token, env.SHEET_ID, SITE_SETTINGS_SHEET, 'updatedAt');
-
     const hasExistingRowsToUpdate = validatedUpdates.some(({ key }) => rowIndexByKey.has(key));
-    if (hasExistingRowsToUpdate && (valueColIndex < 1 || updatedAtColIndex < 1)) {
-      throw new Error('SiteSettings sheet is missing required columns: value and updatedAt');
+    let valueColIndex = -1;
+    let updatedAtColIndex = -1;
+    if (hasExistingRowsToUpdate) {
+      valueColIndex = await getColumnIndex(token, env.SHEET_ID, SITE_SETTINGS_SHEET, 'value');
+      updatedAtColIndex = await getColumnIndex(token, env.SHEET_ID, SITE_SETTINGS_SHEET, 'updatedAt');
+      if (valueColIndex < 1 || updatedAtColIndex < 1) {
+        throw new Error('SiteSettings sheet is missing required columns: value and updatedAt');
+      }
     }
 
     for (const { key, value } of validatedUpdates) {
