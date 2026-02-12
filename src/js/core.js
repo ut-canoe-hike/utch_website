@@ -17,7 +17,11 @@ export function getApiBaseUrl() {
 }
 
 export function getDisplayTimeZone() {
-  return getConfig().timeZone || 'America/New_York';
+  const timeZone = getConfig().timeZone;
+  if (!timeZone) {
+    throw new Error('Missing UTCH_CONFIG.timeZone in src/public/assets/config.js.');
+  }
+  return timeZone;
 }
 
 export function getDateTimePartsForInput(date, timeZone) {

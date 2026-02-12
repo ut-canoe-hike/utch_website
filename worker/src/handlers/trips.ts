@@ -364,9 +364,10 @@ export async function updateTrip(
 
     for (const [col, val] of Object.entries(updates)) {
       const colIndex = await getColumnIndex(token, env.SHEET_ID, 'Trips', col);
-      if (colIndex > 0) {
-        await updateCell(token, env.SHEET_ID, 'Trips', rowIndex, colIndex, val);
+      if (colIndex < 1) {
+        throw new Error(`Trips sheet is missing "${col}" column`);
       }
+      await updateCell(token, env.SHEET_ID, 'Trips', rowIndex, colIndex, val);
     }
 
     return success({ tripId, eventId: newEventId, requestUrl });
@@ -514,9 +515,10 @@ export async function syncTripsWithCalendar(env: Env, siteBaseUrl: string): Prom
     if (!eventId || !updated) {
       eventId = await createEvent(token, env.CALENDAR_ID, calendarEvent);
       const colIndex = await getColumnIndex(token, env.SHEET_ID, 'Trips', 'eventId');
-      if (colIndex > 0) {
-        await updateCell(token, env.SHEET_ID, 'Trips', trip.rowIndex, colIndex, eventId);
+      if (colIndex < 1) {
+        throw new Error('Trips sheet is missing "eventId" column');
       }
+      await updateCell(token, env.SHEET_ID, 'Trips', trip.rowIndex, colIndex, eventId);
     }
   }
 }

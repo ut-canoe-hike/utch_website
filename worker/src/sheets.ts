@@ -30,7 +30,6 @@ export async function getRows(
   });
 
   if (!response.ok) {
-    if (response.status === 404) return []; // Sheet doesn't exist yet
     const text = await response.text();
     throw new Error(`Sheets API error: ${text}`);
   }
