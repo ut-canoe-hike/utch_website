@@ -383,41 +383,6 @@ function initPageLoad() {
   document.body.classList.add('is-loaded');
 }
 
-function initPageTransitions() {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-  document.querySelectorAll('a[href]').forEach((link) => {
-    const href = link.getAttribute('href') || '';
-    if (
-      href.startsWith('#') ||
-      href.startsWith('mailto:') ||
-      href.startsWith('tel:') ||
-      link.target === '_blank'
-    ) {
-      return;
-    }
-
-    const url = new URL(link.href, window.location.href);
-    if (url.origin !== window.location.origin) return;
-
-    link.addEventListener('click', (event) => {
-      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
-      event.preventDefault();
-      warmDocument(url.href, { urgent: true });
-      document.body.classList.add('is-leaving');
-      const destination = link.href;
-      const targetKey = `${url.pathname}${url.search}`;
-      const transitionDelayMs = warmedDocumentPaths.has(targetKey) ? 90 : 140;
-      setTimeout(() => {
-        window.location.href = destination;
-      }, transitionDelayMs);
-    });
-  });
-
-  window.addEventListener('pageshow', () => {
-    document.body.classList.remove('is-leaving');
-  });
-}
 
 // ============================================
 // Initialize Core
@@ -431,7 +396,6 @@ document.addEventListener('DOMContentLoaded', () => {
   initHeaderScroll();
   initScrollProgress();
   initPageLoad();
-  initPageTransitions();
   initLinkPrefetch();
   if (pageUsesSiteSettings()) {
     loadSiteSettings().catch((err) => {

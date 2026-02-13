@@ -153,11 +153,6 @@ body.is-loaded {
   animation: fadeInPage 500ms var(--ease-out) both;
 }
 
-body.is-leaving {
-  opacity: 0;
-  transition: opacity 250ms var(--ease-out);
-}
-
 @keyframes fadeInPage {
   from { opacity: 0; }
   to { opacity: 1; }
