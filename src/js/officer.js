@@ -48,6 +48,8 @@ const SITE_SETTINGS_FIELDS = [
   'requestReceivedMessage',
 ];
 
+const OFFICER_SECRET_STORAGE_KEY = 'utchOfficerSecret';
+
 function initOfficerPortal() {
   const loginSection = document.querySelector('[data-officer-login]');
   const dashboard = document.querySelector('[data-officer-dashboard]');
@@ -86,6 +88,26 @@ function initOfficerPortal() {
   const dashboardHash = dashboard.dataset.officerHash || 'manage';
   const shouldLoadTrips = Boolean(tripForm || deleteForm || requestsTripSelect);
   const shouldLoadSettings = Boolean(settingsForm);
+
+  function readStoredOfficerSecret() {
+    try {
+      return window.sessionStorage.getItem(OFFICER_SECRET_STORAGE_KEY) || '';
+    } catch {
+      return '';
+    }
+  }
+
+  function writeStoredOfficerSecret(secret) {
+    try {
+      if (!secret) {
+        window.sessionStorage.removeItem(OFFICER_SECRET_STORAGE_KEY);
+      } else {
+        window.sessionStorage.setItem(OFFICER_SECRET_STORAGE_KEY, secret);
+      }
+    } catch {
+      // Ignore storage failures (private mode, blocked storage, etc.)
+    }
+  }
 
   function getTripMode() {
     return tripModeSelect?.value === 'EDIT' ? 'EDIT' : 'CREATE';
@@ -266,6 +288,35 @@ function initOfficerPortal() {
     if (tripStatus) {
       tripStatus.hidden = true;
     }
+  }
+
+  async function unlockDashboard(secret, statusElement, checkingText = 'Checking...') {
+    const normalizedSecret = String(secret || '').trim();
+    if (!normalizedSecret) {
+      return false;
+    }
+
+    setStatus(statusElement, '', checkingText);
+    try {
+      await api('POST', '/api/officer/verify', { officerSecret: normalizedSecret });
+    } catch (err) {
+      setStatus(statusElement, 'err', getErrorMessage(err, 'Not authorized.'));
+      writeStoredOfficerSecret('');
+      officerSecret = '';
+      return false;
+    }
+
+    officerSecret = normalizedSecret;
+    writeStoredOfficerSecret(normalizedSecret);
+    setStatus(statusElement, 'ok', 'Access granted.');
+    showDashboard();
+    updateTripFormMode();
+
+    const loaders = [];
+    if (shouldLoadTrips) loaders.push(loadAdminTrips());
+    if (shouldLoadSettings) loaders.push(loadEditableSiteSettings());
+    await Promise.allSettled(loaders);
+    return true;
   }
 
   function fillSiteSettingsForm(settings) {
@@ -538,24 +589,7 @@ function initOfficerPortal() {
       setStatus(loginStatus, 'err', 'Passcode is required.');
       return;
     }
-    setStatus(loginStatus, '', 'Checking...');
-
-    try {
-      await api('POST', '/api/officer/verify', { officerSecret: secret });
-    } catch (err) {
-      setStatus(loginStatus, 'err', getErrorMessage(err, 'Not authorized.'));
-      return;
-    }
-
-    officerSecret = secret;
-    setStatus(loginStatus, 'ok', 'Access granted.');
-    showDashboard();
-    updateTripFormMode();
-
-    const loaders = [];
-    if (shouldLoadTrips) loaders.push(loadAdminTrips());
-    if (shouldLoadSettings) loaders.push(loadEditableSiteSettings());
-    await Promise.allSettled(loaders);
+    await unlockDashboard(secret, loginStatus, 'Checking...');
   });
 
   settingsForm?.addEventListener('submit', async (event) => {
@@ -662,6 +696,11 @@ function initOfficerPortal() {
       syncButton.disabled = false;
     }
   });
+
+  const storedSecret = readStoredOfficerSecret();
+  if (storedSecret) {
+    void unlockDashboard(storedSecret, loginStatus, 'Restoring session...');
+  }
 }
 
 document.addEventListener('DOMContentLoaded', () => {

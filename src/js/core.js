@@ -278,6 +278,52 @@ function initScrollProgress() {
 // Page Lifecycle
 // ============================================
 
+function initLinkPrefetch() {
+  const prefetched = new Set();
+
+  function prefetchHref(rawHref) {
+    if (!rawHref) return;
+
+    let url;
+    try {
+      url = new URL(rawHref, window.location.href);
+    } catch {
+      return;
+    }
+
+    if (url.origin !== window.location.origin) return;
+    if (url.pathname === window.location.pathname && url.search === window.location.search) return;
+
+    const key = `${url.pathname}${url.search}`;
+    if (prefetched.has(key)) return;
+    prefetched.add(key);
+
+    const link = document.createElement("link");
+    link.rel = "prefetch";
+    link.as = "document";
+    link.href = key;
+    document.head.appendChild(link);
+  }
+
+  document.querySelectorAll("a[href]").forEach((anchor) => {
+    const href = anchor.getAttribute("href") || "";
+    if (
+      !href ||
+      href.startsWith("#") ||
+      href.startsWith("mailto:") ||
+      href.startsWith("tel:") ||
+      anchor.target === "_blank" ||
+      anchor.hasAttribute("download")
+    ) {
+      return;
+    }
+
+    const triggerPrefetch = () => prefetchHref(anchor.href);
+    anchor.addEventListener("pointerenter", triggerPrefetch, { passive: true });
+    anchor.addEventListener("focus", triggerPrefetch, { passive: true });
+    anchor.addEventListener("touchstart", triggerPrefetch, { passive: true, once: true });
+  });
+}
 function initPageLoad() {
   document.body.classList.add('is-loaded');
 }
@@ -328,6 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initScrollProgress();
   initPageLoad();
   initPageTransitions();
+  initLinkPrefetch();
   if (pageUsesSiteSettings()) {
     loadSiteSettings().catch((err) => {
       const message = err instanceof Error ? err.message : 'Failed to load site settings.';
