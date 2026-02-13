@@ -25,6 +25,74 @@ export function getDisplayTimeZone() {
 }
 
 let siteSettingsPromise = null;
+const warmedDocumentPaths = new Set();
+const warmingDocumentPromises = new Map();
+
+function getNavigableDocumentTarget(rawHref) {
+  if (!rawHref) return null;
+
+  let url;
+  try {
+    url = new URL(rawHref, window.location.href);
+  } catch {
+    return null;
+  }
+
+  if (url.origin !== window.location.origin) return null;
+  if (url.hash && `${url.pathname}${url.search}` === `${window.location.pathname}${window.location.search}`) {
+    return null;
+  }
+  if (url.pathname === window.location.pathname && url.search === window.location.search) return null;
+
+  if (/\.(pdf|png|jpe?g|webp|avif|gif|svg|zip|mp4|webm|mp3)$/i.test(url.pathname)) {
+    return null;
+  }
+
+  return {
+    url,
+    key: `${url.pathname}${url.search}`,
+  };
+}
+
+function canPrefetch() {
+  const connection = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  if (!connection) return true;
+  if (connection.saveData) return false;
+  const effectiveType = String(connection.effectiveType || '').toLowerCase();
+  return !effectiveType.includes('2g');
+}
+
+function warmDocument(rawHref, { urgent = false } = {}) {
+  const target = getNavigableDocumentTarget(rawHref);
+  if (!target) return;
+  const { key, url } = target;
+
+  if (warmedDocumentPaths.has(key) || warmingDocumentPromises.has(key)) return;
+  if (!canPrefetch()) return;
+
+  const hint = document.createElement('link');
+  hint.rel = 'prefetch';
+  hint.as = 'document';
+  hint.href = key;
+  document.head.appendChild(hint);
+
+  const priority = urgent ? 'high' : 'low';
+  const request = fetch(url.href, {
+    method: 'GET',
+    credentials: 'same-origin',
+    cache: 'force-cache',
+    priority,
+  }).catch(() => {
+    // Ignore prefetch failures and let normal navigation handle fetch.
+  }).finally(() => {
+    warmingDocumentPromises.delete(key);
+  });
+
+  warmingDocumentPromises.set(key, request);
+  request.then(() => {
+    warmedDocumentPaths.add(key);
+  });
+}
 
 function pageUsesSiteSettings() {
   return Boolean(
@@ -279,50 +347,37 @@ function initScrollProgress() {
 // ============================================
 
 function initLinkPrefetch() {
-  const prefetched = new Set();
-
-  function prefetchHref(rawHref) {
-    if (!rawHref) return;
-
-    let url;
-    try {
-      url = new URL(rawHref, window.location.href);
-    } catch {
-      return;
-    }
-
-    if (url.origin !== window.location.origin) return;
-    if (url.pathname === window.location.pathname && url.search === window.location.search) return;
-
-    const key = `${url.pathname}${url.search}`;
-    if (prefetched.has(key)) return;
-    prefetched.add(key);
-
-    const link = document.createElement("link");
-    link.rel = "prefetch";
-    link.as = "document";
-    link.href = key;
-    document.head.appendChild(link);
-  }
-
-  document.querySelectorAll("a[href]").forEach((anchor) => {
-    const href = anchor.getAttribute("href") || "";
+  document.querySelectorAll('a[href]').forEach((anchor) => {
+    const href = anchor.getAttribute('href') || '';
     if (
       !href ||
-      href.startsWith("#") ||
-      href.startsWith("mailto:") ||
-      href.startsWith("tel:") ||
-      anchor.target === "_blank" ||
-      anchor.hasAttribute("download")
+      href.startsWith('#') ||
+      href.startsWith('mailto:') ||
+      href.startsWith('tel:') ||
+      anchor.target === '_blank' ||
+      anchor.hasAttribute('download')
     ) {
       return;
     }
 
-    const triggerPrefetch = () => prefetchHref(anchor.href);
-    anchor.addEventListener("pointerenter", triggerPrefetch, { passive: true });
-    anchor.addEventListener("focus", triggerPrefetch, { passive: true });
-    anchor.addEventListener("touchstart", triggerPrefetch, { passive: true, once: true });
+    const triggerPrefetch = () => warmDocument(anchor.href);
+    const triggerUrgentWarm = () => warmDocument(anchor.href, { urgent: true });
+
+    anchor.addEventListener('pointerenter', triggerPrefetch, { passive: true });
+    anchor.addEventListener('focus', triggerPrefetch, { passive: true });
+    anchor.addEventListener('touchstart', triggerUrgentWarm, { passive: true, once: true });
+    anchor.addEventListener('pointerdown', triggerUrgentWarm, { passive: true });
   });
+
+  const warmVisibleNavLinks = () => {
+    document.querySelectorAll('.nav a[href]').forEach((anchor) => warmDocument(anchor.href));
+  };
+
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(warmVisibleNavLinks, { timeout: 1200 });
+  } else {
+    window.setTimeout(warmVisibleNavLinks, 500);
+  }
 }
 function initPageLoad() {
   document.body.classList.add('is-loaded');
@@ -348,11 +403,14 @@ function initPageTransitions() {
     link.addEventListener('click', (event) => {
       if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return;
       event.preventDefault();
+      warmDocument(url.href, { urgent: true });
       document.body.classList.add('is-leaving');
       const destination = link.href;
+      const targetKey = `${url.pathname}${url.search}`;
+      const transitionDelayMs = warmedDocumentPaths.has(targetKey) ? 90 : 140;
       setTimeout(() => {
         window.location.href = destination;
-      }, 200);
+      }, transitionDelayMs);
     });
   });
 
